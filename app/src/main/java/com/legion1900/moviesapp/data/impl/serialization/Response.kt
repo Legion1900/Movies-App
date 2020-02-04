@@ -1,4 +1,4 @@
-package com.legion1900.moviesapp.data
+package com.legion1900.moviesapp.data.impl.serialization
 
 import com.google.gson.annotations.SerializedName
 
@@ -9,5 +9,5 @@ data class Response(
     val page: Int,
     @SerializedName("total_results") val totalResults: Int,
     @SerializedName("total_pages") val totalPages: Int,
-    @SerializedName("results") val films: ArrayList<Results>
+    @SerializedName("results") val movies: List<Movie>
 )

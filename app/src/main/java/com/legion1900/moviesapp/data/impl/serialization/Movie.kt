@@ -1,14 +1,14 @@
-package com.legion1900.moviesapp.data
+package com.legion1900.moviesapp.data.impl.serialization
 
 import com.google.gson.annotations.SerializedName
 
 /*
 * Represents one result from array of results
 * */
-data class Results(
+data class Movie(
     val id: Int,
-    @SerializedName("poster_path") val posterPath: String,
-    @SerializedName("backdrop_path") val backdropPath: String,
+    @SerializedName("poster_path") val posterPath: String?,
+    @SerializedName("backdrop_path") val backdropPath: String?,
     @SerializedName("original_language") val originalLanguage: String,
     @SerializedName("original_title") val originalTitle: String,
     val title: String,

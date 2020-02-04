@@ -1,7 +1,7 @@
 package com.legion1900.moviesapp.di.modules
 
 import androidx.lifecycle.ViewModelProvider
-import com.legion1900.moviesapp.view.di.ViewModelFactory
+import com.legion1900.moviesapp.di.ViewModelFactory
 import dagger.Binds
 import dagger.Module
 import javax.inject.Singleton

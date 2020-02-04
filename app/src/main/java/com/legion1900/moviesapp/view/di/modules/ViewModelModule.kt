@@ -1,4 +1,4 @@
-package com.legion1900.moviesapp.view.di
+package com.legion1900.moviesapp.view.di.modules
 
 import androidx.lifecycle.ViewModel
 import com.legion1900.moviesapp.di.ViewModelKey

@@ -1,6 +1,6 @@
 package com.legion1900.moviesapp.data.abs
 
-import com.legion1900.moviesapp.data.impl.serialization.Movie
+import com.legion1900.moviesapp.data.abs.dto.Movie
 import io.reactivex.Single
 
 interface MoviesRepository {

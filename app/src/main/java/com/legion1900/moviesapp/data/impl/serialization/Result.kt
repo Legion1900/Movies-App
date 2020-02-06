@@ -5,7 +5,7 @@ import com.google.gson.annotations.SerializedName
 /*
 * Represents one result from array of results
 * */
-data class Movie(
+data class Result(
     val id: Int,
     @SerializedName("poster_path") val posterPath: String?,
     @SerializedName("backdrop_path") val backdropPath: String?,

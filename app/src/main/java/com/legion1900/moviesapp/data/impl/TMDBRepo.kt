@@ -31,15 +31,15 @@ class TMDBRepo @Inject constructor(
 
     private fun loadMovies(query: Map<String, String>): Single<List<Movie>> {
         return service.loadPopularMovies(query).subscribeOn(Schedulers.io()).map { response ->
-            totalPages = response.totalPages
-            currentPage = response.page
-            val posterSize =
-                apiConfig!!.imageApi.posterSizes[TMDBConfiguration.Images.ImageSize.MEDIUM]
-            val backdropSize =
-                apiConfig!!.imageApi.posterSizes[TMDBConfiguration.Images.ImageSize.LARGE]
-            val baseUrl = apiConfig!!.imageApi.baseUrl
-            ResultMovieConverter(baseUrl, posterSize, backdropSize)
-                .resultsToMovies(response.results)
+            with(apiConfig!!) {
+                totalPages = response.totalPages
+                currentPage = response.page
+                val posterSize = imageApi.posterSizes[TMDBConfiguration.Images.ImageSize.MEDIUM]
+                val backdropSize = imageApi.posterSizes[TMDBConfiguration.Images.ImageSize.LARGE]
+                val baseUrl = imageApi.baseUrl
+                ResultMovieConverter(baseUrl, posterSize, backdropSize)
+                    .resultsToMovies(response.results)
+            }
         }
     }
 

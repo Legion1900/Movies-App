@@ -11,6 +11,7 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.Observer
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.RequestManager
+import com.bumptech.glide.request.RequestOptions
 import com.legion1900.moviesapp.R
 import com.legion1900.moviesapp.data.abs.dto.Movie
 
@@ -37,7 +38,10 @@ class MoviesAdapter(
 
     override fun onBindViewHolder(holder: MovieHolder, position: Int) {
         val movie = movies[position]
-        glide.load(movie.posterPath).into(holder.poster)
+        glide
+            .setDefaultRequestOptions(glideOptions)
+            .load(movie.posterPath)
+            .into(holder.poster)
         holder.title.text = movie.title
     }
 
@@ -54,6 +58,11 @@ class MoviesAdapter(
             dataSource.observe(view.context as LifecycleOwner, Observer {
                 adapter.movies = it
             })
+        }
+
+        private val glideOptions = RequestOptions().apply {
+            placeholder(R.drawable.img_preview)
+            error(R.drawable.img_error)
         }
     }
 }

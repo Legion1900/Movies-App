@@ -16,15 +16,15 @@ import com.legion1900.moviesapp.view.mainscreen.adapters.MoviesAdapter
 import javax.inject.Inject
 
 
-class PopularFilmsFragment : BaseFragment() {
+class PopularMoviesFragment : BaseFragment() {
 
     @Inject
     lateinit var glide: RequestManager
 
     private lateinit var binding: PopularFilmsFragmentBinding
 
-    private val viewModel: PopularFilmsViewModel by lazy {
-        ViewModelProvider(this, viewModelFactory)[PopularFilmsViewModel::class.java]
+    private val viewModel: PopularMoviesViewModel by lazy {
+        ViewModelProvider(this, viewModelFactory)[PopularMoviesViewModel::class.java]
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {

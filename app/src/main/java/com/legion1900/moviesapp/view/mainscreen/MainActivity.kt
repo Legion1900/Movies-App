@@ -1,7 +1,7 @@
 package com.legion1900.moviesapp.view.mainscreen
 
-import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
+import androidx.appcompat.app.AppCompatActivity
 import com.legion1900.moviesapp.R
 
 class MainActivity : AppCompatActivity() {

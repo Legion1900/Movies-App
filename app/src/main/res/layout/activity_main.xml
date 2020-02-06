@@ -7,7 +7,7 @@
 
     <androidx.fragment.app.FragmentContainerView
         android:id="@+id/popular_films_fragment"
-        android:name="com.legion1900.moviesapp.view.mainscreen.PopularFilmsFragment"
+        android:name="com.legion1900.moviesapp.view.mainscreen.PopularMoviesFragment"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         tools:layout="@layout/popular_films_fragment"/>

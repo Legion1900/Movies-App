@@ -1,14 +1,18 @@
 package com.legion1900.moviesapp.data.impl.services
 
 import com.legion1900.moviesapp.data.impl.serialization.Response
+import com.legion1900.moviesapp.data.impl.serialization.TMDBConfiguration
 import io.reactivex.Single
 import retrofit2.http.GET
+import retrofit2.http.Query
 import retrofit2.http.QueryMap
-
 
 interface TMDBService {
     @GET("discover/movie")
     fun loadPopularMovies(@QueryMap query: Map<String, String>): Single<Response>
+
+    @GET("configuration")
+    fun loadApiConfig(@Query("api_key") apiKey: String): Single<TMDBConfiguration>
 
     companion object {
         private const val PARAM_SORT_BY = "sort_by"
@@ -25,6 +29,7 @@ interface TMDBService {
         ): Map<String, String> = mapOf(
             PARAM_SORT_BY to sortBy,
             PARAM_API_KEY to apiKey,
-            PARAM_PAGE to page.toString())
+            PARAM_PAGE to page.toString()
+        )
     }
 }

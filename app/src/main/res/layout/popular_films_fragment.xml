@@ -10,6 +10,8 @@
             type="com.legion1900.moviesapp.view.mainscreen.PopularMoviesViewModel" />
     </data>
 
+    <!--TODO: add SwipeRefresh layout and RecyclerView placeholder to display error if no data was loaded-->
+
     <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"

@@ -2,7 +2,6 @@ package com.legion1900.moviesapp.data.impl
 
 import com.legion1900.moviesapp.data.abs.MoviesRepository
 import com.legion1900.moviesapp.data.abs.dto.Movie
-import com.legion1900.moviesapp.data.impl.serialization.Result
 import com.legion1900.moviesapp.data.impl.serialization.TMDBConfiguration
 import com.legion1900.moviesapp.data.impl.services.TMDBService
 import io.reactivex.Single
@@ -39,9 +38,8 @@ class TMDBRepo @Inject constructor(
             val backdropSize =
                 apiConfig!!.imageApi.posterSizes[TMDBConfiguration.Images.ImageSize.LARGE]
             val baseUrl = apiConfig!!.imageApi.baseUrl
-            val movies = mutableListOf<Movie>()
-            response.movies.forEach { movies += it.toMovie(baseUrl, posterSize!!, backdropSize!!) }
-            movies
+            ResultMovieConverter(baseUrl, posterSize, backdropSize)
+                .resultsToMovies(response.results)
         }
     }
 
@@ -52,33 +50,4 @@ class TMDBRepo @Inject constructor(
     }
 
     override fun getNextPage(): Single<List<Movie>> = getMovies(++currentPage)
-
-    private companion object {
-        val builder = StringBuilder()
-
-        fun Result.toMovie(imgBaseUrl: String, posterSize: String, backDropSize: String): Movie {
-            val poster = posterPath?.properPath(imgBaseUrl, posterSize)
-            val backdrop = backdropPath?.properPath(imgBaseUrl, backDropSize)
-            return Movie(
-                title,
-                originalTitle,
-                avgVote,
-                poster,
-                backdrop,
-                originalLanguage,
-                overview,
-                releaseDate
-            )
-        }
-
-        fun String.properPath(baseUrl: String, size: String): String {
-            builder.append(baseUrl)
-            builder.append(size)
-            builder.append("/")
-            builder.append(this)
-            val path = builder.toString()
-            builder.clear()
-            return path
-        }
-    }
 }

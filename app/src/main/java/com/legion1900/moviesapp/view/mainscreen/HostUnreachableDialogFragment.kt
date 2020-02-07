@@ -22,17 +22,27 @@ class HostUnreachableDialogFragment : DialogFragment() {
 
     private lateinit var positiveCallback: PositiveCallback
 
+    override fun onActivityCreated(savedInstanceState: Bundle?) {
+        super.onActivityCreated(savedInstanceState)
+        retainInstance = true
+    }
+
     override fun onCreateDialog(savedInstanceState: Bundle?): Dialog {
-        arguments!!.apply {
+        getArgs()
+        return AlertDialog.Builder(context)
+            .setCancelable(false)
+            .setMessage(msg)
+            .setPositiveButton(btnText, positiveCallback::onPositiveClick)
+            .create()
+    }
+
+    private fun getArgs() {
+        arguments?.apply {
             msg = getInt(KEY_MSG)
             btnText = getInt(KEY_BTN)
             positiveCallback = getParcelable(KEY_CALLBACK)
                 ?: throw RuntimeException("${PositiveCallback::class} must be set")
-        }
-        return AlertDialog.Builder(context)
-            .setMessage(msg)
-            .setPositiveButton(btnText, positiveCallback::onPositiveClick)
-            .create()
+        } ?: throw java.lang.RuntimeException("Arguments must be provided")
     }
 
     override fun show(manager: FragmentManager, tag: String?) {
@@ -43,8 +53,10 @@ class HostUnreachableDialogFragment : DialogFragment() {
     }
 
     override fun dismiss() {
-        isDisplayed = false
-        super.dismiss()
+        if (isDisplayed) {
+            isDisplayed = false
+            super.dismiss()
+        }
     }
 
     abstract class PositiveCallback : Parcelable {
@@ -63,5 +75,20 @@ class HostUnreachableDialogFragment : DialogFragment() {
         const val KEY_MSG = "msg"
         const val KEY_BTN = "btn_text"
         const val KEY_CALLBACK = "callback"
+
+        fun create(
+            @StringRes msgTxt: Int,
+            @StringRes btnTxt: Int,
+            callback: PositiveCallback
+        ): HostUnreachableDialogFragment {
+            val fragment = HostUnreachableDialogFragment()
+            val args = Bundle().apply {
+                putInt(KEY_MSG, msgTxt)
+                putInt(KEY_BTN, btnTxt)
+                putParcelable(KEY_CALLBACK, callback)
+            }
+            fragment.arguments = args
+            return fragment
+        }
     }
 }

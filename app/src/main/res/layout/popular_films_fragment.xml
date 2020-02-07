@@ -26,8 +26,7 @@
             app:layout_constraintTop_toTopOf="parent"
             app:layout_constraintVertical_bias="0"
             app:setDataSource="@{viewModel.movies}"
-            app:visibility="@{viewModel.isRecyclerViewVisible()}"
-            tools:visibility="visible" />
+            app:visibility="@{viewModel.recyclerViewVisibility}" />
 
         <ProgressBar
             android:id="@+id/loading_animation"
@@ -40,7 +39,7 @@
             app:layout_constraintHeight_percent=".2"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent"
-            app:visibility="@{viewModel.isProgressBarVisible()}" />
+            app:visibility="@{viewModel.progressBarVisibility}" />
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 </layout>

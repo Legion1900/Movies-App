@@ -2,7 +2,7 @@ package com.legion1900.moviesapp.view.di
 
 import androidx.fragment.app.Fragment
 import com.legion1900.moviesapp.view.di.modules.GlideModule
-import com.legion1900.moviesapp.view.mainscreen.PopularMoviesFragment
+import com.legion1900.moviesapp.view.fragments.mainscreen.PopularMoviesFragment
 import dagger.BindsInstance
 import dagger.Module
 import dagger.Subcomponent

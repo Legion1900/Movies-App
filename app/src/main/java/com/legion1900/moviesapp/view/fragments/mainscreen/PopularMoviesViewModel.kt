@@ -1,4 +1,4 @@
-package com.legion1900.moviesapp.view.mainscreen
+package com.legion1900.moviesapp.view.fragments.mainscreen
 
 import android.view.View
 import android.widget.ProgressBar

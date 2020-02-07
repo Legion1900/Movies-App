@@ -1,4 +1,4 @@
-package com.legion1900.moviesapp.view.mainscreen.adapters
+package com.legion1900.moviesapp.view.fragments.mainscreen.adapters
 
 import android.view.LayoutInflater
 import android.view.View

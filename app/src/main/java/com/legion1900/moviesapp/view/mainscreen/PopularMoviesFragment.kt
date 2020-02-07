@@ -17,7 +17,6 @@ import com.legion1900.moviesapp.view.base.BaseFragment
 import com.legion1900.moviesapp.view.mainscreen.adapters.MoviesAdapter
 import javax.inject.Inject
 
-
 class PopularMoviesFragment : BaseFragment() {
 
     @Inject

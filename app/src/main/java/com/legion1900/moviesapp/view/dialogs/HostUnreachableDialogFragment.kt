@@ -1,4 +1,4 @@
-package com.legion1900.moviesapp.view.mainscreen
+package com.legion1900.moviesapp.view.dialogs
 
 import android.app.AlertDialog
 import android.app.Dialog
@@ -81,7 +81,8 @@ class HostUnreachableDialogFragment : DialogFragment() {
             @StringRes btnTxt: Int,
             callback: PositiveCallback
         ): HostUnreachableDialogFragment {
-            val fragment = HostUnreachableDialogFragment()
+            val fragment =
+                HostUnreachableDialogFragment()
             val args = Bundle().apply {
                 putInt(KEY_MSG, msgTxt)
                 putInt(KEY_BTN, btnTxt)

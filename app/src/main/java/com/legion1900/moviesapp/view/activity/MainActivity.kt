@@ -1,4 +1,4 @@
-package com.legion1900.moviesapp.view.mainscreen
+package com.legion1900.moviesapp.view.activity
 
 import android.os.Bundle
 import androidx.appcompat.app.AppCompatActivity

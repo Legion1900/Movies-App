@@ -1,4 +1,4 @@
-package com.legion1900.moviesapp.view.mainscreen
+package com.legion1900.moviesapp.view.fragments.mainscreen
 
 import android.content.DialogInterface
 import android.os.Bundle
@@ -14,7 +14,8 @@ import com.legion1900.moviesapp.R
 import com.legion1900.moviesapp.databinding.PopularFilmsFragmentBinding
 import com.legion1900.moviesapp.di.App
 import com.legion1900.moviesapp.view.base.BaseFragment
-import com.legion1900.moviesapp.view.mainscreen.adapters.MoviesAdapter
+import com.legion1900.moviesapp.view.dialogs.HostUnreachableDialogFragment
+import com.legion1900.moviesapp.view.fragments.mainscreen.adapters.MoviesAdapter
 import javax.inject.Inject
 
 class PopularMoviesFragment : BaseFragment() {

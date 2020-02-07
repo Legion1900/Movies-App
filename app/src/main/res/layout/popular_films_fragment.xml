@@ -7,7 +7,7 @@
 
         <variable
             name="viewModel"
-            type="com.legion1900.moviesapp.view.mainscreen.PopularMoviesViewModel" />
+            type="com.legion1900.moviesapp.view.fragments.mainscreen.PopularMoviesViewModel" />
     </data>
 
     <!--TODO: add SwipeRefresh layout and RecyclerView placeholder to display error if no data was loaded-->
@@ -15,7 +15,7 @@
     <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        tools:context=".view.mainscreen.PopularMoviesFragment">
+        tools:context=".view.fragments.mainscreen.PopularMoviesFragment">
 
         <androidx.recyclerview.widget.RecyclerView
             android:id="@+id/movie_list"

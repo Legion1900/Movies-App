@@ -25,12 +25,12 @@ class HostUnreachableDialogFragment : DialogFragment() {
     override fun onActivityCreated(savedInstanceState: Bundle?) {
         super.onActivityCreated(savedInstanceState)
         retainInstance = true
+        isCancelable = false
     }
 
     override fun onCreateDialog(savedInstanceState: Bundle?): Dialog {
         getArgs()
         return AlertDialog.Builder(context)
-            .setCancelable(false)
             .setMessage(msg)
             .setPositiveButton(btnText, positiveCallback::onPositiveClick)
             .create()

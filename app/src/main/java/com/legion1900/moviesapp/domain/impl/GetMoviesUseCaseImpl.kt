@@ -8,7 +8,7 @@ import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.disposables.CompositeDisposable
 import javax.inject.Inject
 
-class PagedGetMovies @Inject constructor(private val repo: MoviesRepository) : GetMoviesUseCase {
+class GetMoviesUseCaseImpl @Inject constructor(private val repo: MoviesRepository) : GetMoviesUseCase {
 
     private var onStart: (() -> Unit)? = null
     private var onSuccess: ((List<Movie>) -> Unit)? = null

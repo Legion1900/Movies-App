@@ -1,16 +1,19 @@
 package com.legion1900.moviesapp.view.fragments.mainscreen
 
+import android.util.Log
 import android.view.View
 import android.widget.ProgressBar
 import androidx.databinding.BindingAdapter
 import androidx.lifecycle.*
 import androidx.recyclerview.widget.RecyclerView
 import com.legion1900.moviesapp.domain.abs.GetMoviesUseCase
+import com.legion1900.moviesapp.domain.abs.PickMovieUseCase
 import com.legion1900.moviesapp.domain.abs.dto.Movie
 import javax.inject.Inject
 
 class PopularMoviesViewModel @Inject constructor(
-    private val moviesProvider: GetMoviesUseCase
+    private val moviesProvider: GetMoviesUseCase,
+    private val moviePicker: PickMovieUseCase
 ) : ViewModel() {
 
     private val progressBarVisibility = MutableLiveData<Boolean>()
@@ -38,6 +41,10 @@ class PopularMoviesViewModel @Inject constructor(
 
     fun loadMovies(page: Int = 1) {
         moviesProvider.getMovies(page)
+    }
+
+    fun pickMovie(movie: Movie) {
+        moviePicker.pick(movie)
     }
 
     private fun onStart() {

@@ -1,12 +1,10 @@
 package com.legion1900.moviesapp.data.abs
 
-import com.legion1900.moviesapp.data.abs.dto.Movie
+import com.legion1900.moviesapp.domain.abs.dto.MovieRequest
 import io.reactivex.Single
 
 interface MoviesRepository {
-    val hasNextPage: Boolean
-    fun getMovies(page: Int = 1): Single<List<Movie>>
-    fun getNextPage(): Single<List<Movie>>
+    fun loadMovies(page: Int): Single<MovieRequest>
 
     companion object {
         const val API_KEY = "api_key"

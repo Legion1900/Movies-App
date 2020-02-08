@@ -2,6 +2,7 @@ package com.legion1900.moviesapp.di
 
 import com.legion1900.moviesapp.di.modules.NetworkModule
 import com.legion1900.moviesapp.di.modules.RepoModule
+import com.legion1900.moviesapp.di.modules.UseCaseModule
 import com.legion1900.moviesapp.view.base.BaseFragment
 import com.legion1900.moviesapp.view.di.FragmentComponent
 import com.legion1900.moviesapp.view.di.modules.ViewModelModule
@@ -14,6 +15,7 @@ import javax.inject.Singleton
         ViewModelModule::class,
         NetworkModule::class,
         RepoModule::class,
+        UseCaseModule::class,
         FragmentComponent.InstallModule::class
     ]
 )

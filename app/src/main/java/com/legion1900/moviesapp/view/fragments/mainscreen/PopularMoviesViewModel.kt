@@ -5,24 +5,28 @@ import android.widget.ProgressBar
 import androidx.databinding.BindingAdapter
 import androidx.lifecycle.*
 import androidx.recyclerview.widget.RecyclerView
-import com.legion1900.moviesapp.data.abs.MoviesRepository
-import com.legion1900.moviesapp.data.abs.dto.Movie
-import io.reactivex.Single
-import io.reactivex.android.schedulers.AndroidSchedulers
-import io.reactivex.disposables.CompositeDisposable
+import com.legion1900.moviesapp.domain.abs.GetMoviesUseCase
+import com.legion1900.moviesapp.domain.abs.dto.Movie
 import javax.inject.Inject
 
-class PopularMoviesViewModel @Inject constructor(private val repo: MoviesRepository) : ViewModel() {
-    private val disposables = CompositeDisposable()
+class PopularMoviesViewModel @Inject constructor(
+    private val moviesProvider: GetMoviesUseCase
+) : ViewModel() {
 
-    private val progressBarVisibility = MutableLiveData<Boolean>().also { it.value = true }
+    private val progressBarVisibility = MutableLiveData<Boolean>()
 
-    private val recyclerViewVisibility = MutableLiveData<Boolean>().also { it.value = false }
+    private val recyclerViewVisibility = MutableLiveData<Boolean>()
 
-    private val isLoadingError = MutableLiveData<Boolean>().also { it.value = false }
+    private val isLoadingError = MutableLiveData<Boolean>()
 
-    private val movies =
-        MutableLiveData<List<Movie>>().apply { repo.loadMovies { getMovies() } }
+    private val movies = MutableLiveData<List<Movie>>()
+
+    init {
+        progressBarVisibility.value = true
+        recyclerViewVisibility.value = false
+        isLoadingError.value = false
+        moviesProvider.subscribe(::onStart, ::onSuccess, ::onError)
+    }
 
     fun getMovies(): LiveData<List<Movie>> = movies
 
@@ -32,21 +36,8 @@ class PopularMoviesViewModel @Inject constructor(private val repo: MoviesReposit
 
     fun isLoadingError(): LiveData<Boolean> = isLoadingError
 
-    fun loadMovies() {
-        repo.loadMovies { getMovies() }
-    }
-
-    private inline fun MoviesRepository.loadMovies(
-        request: MoviesRepository.() -> Single<List<Movie>>
-    ) {
-        val loadingDisposable = request()
-            .doOnSubscribe {
-                onStart()
-                disposables.add(it)
-            }
-            .observeOn(AndroidSchedulers.mainThread())
-            .subscribe(::onSuccess, ::onError)
-        disposables.add(loadingDisposable)
+    fun loadMovies(page: Int = 1) {
+        moviesProvider.getMovies(page)
     }
 
     private fun onStart() {
@@ -68,7 +59,7 @@ class PopularMoviesViewModel @Inject constructor(private val repo: MoviesReposit
 
     override fun onCleared() {
         super.onCleared()
-        disposables.clear()
+        moviesProvider.dispose()
     }
 
     companion object {

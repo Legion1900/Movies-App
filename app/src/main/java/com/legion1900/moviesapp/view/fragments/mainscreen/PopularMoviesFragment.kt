@@ -2,6 +2,7 @@ package com.legion1900.moviesapp.view.fragments.mainscreen
 
 import android.content.DialogInterface
 import android.os.Bundle
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -24,6 +25,8 @@ class PopularMoviesFragment : BaseFragment() {
     lateinit var glide: RequestManager
 
     private lateinit var binding: PopularFilmsFragmentBinding
+
+    private lateinit var adapter: MoviesAdapter
 
     private val viewModel: PopularMoviesViewModel by lazy {
         ViewModelProvider(this, viewModelFactory)[PopularMoviesViewModel::class.java]
@@ -54,6 +57,7 @@ class PopularMoviesFragment : BaseFragment() {
     ): View? {
         binding =
             DataBindingUtil.inflate(inflater, R.layout.popular_films_fragment, container, false)
+        initRecyclerView()
         initDataBinding()
         initLoadingErrorDialog()
 
@@ -65,7 +69,13 @@ class PopularMoviesFragment : BaseFragment() {
         binding.run {
             viewModel = this@PopularMoviesFragment.viewModel
             lifecycleOwner = this@PopularMoviesFragment
-            movieList.adapter = MoviesAdapter(::onMovieClick, glide)
+        }
+    }
+
+    private fun initRecyclerView() {
+        binding.run {
+            adapter = MoviesAdapter(::onMovieClick, glide)
+            movieList.adapter = adapter
             movieList.layoutManager = GridLayoutManager(context, 2)
         }
     }
@@ -80,7 +90,10 @@ class PopularMoviesFragment : BaseFragment() {
     }
 
     private fun onMovieClick(v: View) {
-        TODO("open another fragment")
+        val position = binding.movieList.getChildAdapterPosition(v)
+        val movie = adapter.getMovie(position)
+        viewModel.pickMovie(movie)
+        // TODO: call second fragment
     }
 
     companion object {

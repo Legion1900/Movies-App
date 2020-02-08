@@ -45,6 +45,8 @@ class MoviesAdapter(
         holder.title.text = movie.title
     }
 
+    fun getMovie(position: Int): Movie = movies[position]
+
     class MovieHolder(item: View) : RecyclerView.ViewHolder(item) {
         val poster: ImageView = item.findViewById(R.id.poster)
         val title: TextView = item.findViewById(R.id.title)

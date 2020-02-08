@@ -1,4 +1,4 @@
-package com.legion1900.moviesapp.data.abs.dto
+package com.legion1900.moviesapp.domain.abs.dto
 
 /*
 * Similar to Result, but contains no id and fully prepared poster links.

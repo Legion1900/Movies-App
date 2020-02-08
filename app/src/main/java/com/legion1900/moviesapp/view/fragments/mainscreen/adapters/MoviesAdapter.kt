@@ -13,7 +13,7 @@ import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.RequestManager
 import com.bumptech.glide.request.RequestOptions
 import com.legion1900.moviesapp.R
-import com.legion1900.moviesapp.data.abs.dto.Movie
+import com.legion1900.moviesapp.domain.abs.dto.Movie
 
 class MoviesAdapter(
     private val onMovieClick: (View) -> Unit,

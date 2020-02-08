@@ -61,6 +61,7 @@ class PopularMoviesFragment : BaseFragment() {
     }
 
     private fun initDataBinding() {
+        viewModel.loadMovies()
         binding.run {
             viewModel = this@PopularMoviesFragment.viewModel
             lifecycleOwner = this@PopularMoviesFragment

@@ -1,6 +1,5 @@
 package com.legion1900.moviesapp.view.fragments.mainscreen
 
-import android.util.Log
 import android.view.View
 import android.widget.ProgressBar
 import androidx.databinding.BindingAdapter

@@ -2,7 +2,6 @@ package com.legion1900.moviesapp.view.fragments.mainscreen
 
 import android.content.DialogInterface
 import android.os.Bundle
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -16,6 +15,7 @@ import com.legion1900.moviesapp.databinding.PopularFilmsFragmentBinding
 import com.legion1900.moviesapp.di.App
 import com.legion1900.moviesapp.view.base.BaseFragment
 import com.legion1900.moviesapp.view.dialogs.HostUnreachableDialogFragment
+import com.legion1900.moviesapp.view.fragments.detailsscreen.MovieDetailsFragment
 import com.legion1900.moviesapp.view.fragments.mainscreen.adapters.MoviesAdapter
 import javax.inject.Inject
 
@@ -93,7 +93,14 @@ class PopularMoviesFragment : BaseFragment() {
         val position = binding.movieList.getChildAdapterPosition(v)
         val movie = adapter.getMovie(position)
         viewModel.pickMovie(movie)
-        // TODO: call second fragment
+        val detailsFragment =
+            MovieDetailsFragment()
+//        TODO: add simple transition animation
+        activity?.supportFragmentManager?.beginTransaction()?.apply {
+            replace(R.id.fragment_container, detailsFragment, MovieDetailsFragment.TAG)
+            addToBackStack(null)
+            commit()
+        }
     }
 
     companion object {

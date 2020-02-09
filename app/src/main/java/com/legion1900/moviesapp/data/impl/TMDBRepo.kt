@@ -11,7 +11,9 @@ import javax.inject.Named
 
 class TMDBRepo @Inject constructor(
     @Named(MoviesRepository.API_KEY) private val apiKey: String,
-    private val service: TMDBService
+    private val service: TMDBService,
+    @Named(MoviesRepository.POSTER_SIZE) val posterSize: TMDBConfiguration.Images.ImageSize,
+    @Named(MoviesRepository.BACKDROP_SIZE)val backdropSize: TMDBConfiguration.Images.ImageSize
 ) : MoviesRepository {
 
     private var apiConfig: TMDBConfiguration? = null
@@ -27,8 +29,8 @@ class TMDBRepo @Inject constructor(
             with(apiConfig!!) {
                 val currentPage = response.page
                 val totalPages = response.totalPages
-                val posterSize = imageApi.posterSizes[TMDBConfiguration.Images.ImageSize.MEDIUM]
-                val backdropSize = imageApi.posterSizes[TMDBConfiguration.Images.ImageSize.LARGE]
+                val posterSize = imageApi.posterSizes[posterSize]
+                val backdropSize = imageApi.posterSizes[backdropSize]
                 val baseUrl = imageApi.baseUrl
                 val movies = ResultMovieConverter(baseUrl, posterSize, backdropSize)
                     .resultsToMovies(response.results)

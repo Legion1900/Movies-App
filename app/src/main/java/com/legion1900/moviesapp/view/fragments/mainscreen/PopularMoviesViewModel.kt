@@ -28,6 +28,8 @@ class PopularMoviesViewModel @Inject constructor(
         recyclerViewVisibility.value = false
         isLoadingError.value = false
         moviesProvider.subscribe(::onStart, ::onSuccess, ::onError)
+
+        moviesProvider.getMovies()
     }
 
     fun getMovies(): LiveData<List<Movie>> = movies

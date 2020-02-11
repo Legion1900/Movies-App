@@ -4,6 +4,7 @@ package com.legion1900.moviesapp.domain.abs.dto
 * Similar to Result, but contains no id and fully prepared poster links.
 * */
 data class Movie(
+    val id: Int,
     val title: String,
     val originalTitle: String,
     val avgVote: Float,

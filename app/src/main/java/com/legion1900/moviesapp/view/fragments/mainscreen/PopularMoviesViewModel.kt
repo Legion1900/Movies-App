@@ -48,6 +48,10 @@ class PopularMoviesViewModel @Inject constructor(
         moviePicker.pick(movie)
     }
 
+    fun retryLoad() {
+        moviesSourceFactory.latestSource?.retryLoad()
+    }
+
     fun invalidateSource() {
         moviesSourceFactory.latestSource?.invalidate()
     }

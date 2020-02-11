@@ -35,7 +35,7 @@ class PopularMoviesFragment : BaseFragment() {
     private val errorCallback = object : HostUnreachableDialogFragment.PositiveCallback() {
         override fun onPositiveClick(dialog: DialogInterface, which: Int) {
             errorDialog.dismiss()
-            viewModel.invalidateSource()
+            viewModel.retryLoad()
         }
     }
 

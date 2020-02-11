@@ -3,7 +3,7 @@ package com.legion1900.moviesapp.domain.impl
 import androidx.paging.PageKeyedDataSource
 import com.legion1900.moviesapp.data.abs.MoviesRepository
 import com.legion1900.moviesapp.domain.abs.dto.Movie
-import com.legion1900.moviesapp.domain.abs.dto.MovieRequest
+import com.legion1900.moviesapp.domain.abs.dto.MoviePage
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.disposables.CompositeDisposable
 
@@ -11,12 +11,13 @@ class MoviesDataSource(private val repo: MoviesRepository) : PageKeyedDataSource
 
     private val disposables = CompositeDisposable()
 
+    private lateinit var load: (MoviePage) -> Unit
+
     private lateinit var onStart: () -> Unit
     private lateinit var onError: (Throwable) -> Unit
     private lateinit var onSuccess: () -> Unit
 
     private var page = 1
-
     private var totalPages = 0
 
     fun subscribe(onStart: () -> Unit, onSuccess: () -> Unit, onError: (Throwable) -> Unit) {
@@ -29,19 +30,17 @@ class MoviesDataSource(private val repo: MoviesRepository) : PageKeyedDataSource
         params: LoadInitialParams<Int>,
         callback: LoadInitialCallback<Int, Movie>
     ) {
-        subscribeToMovies(page) {
-            callback.onResult(it.movies, page, ++page)
-        }
+        load = { callback.onResult(it.movies, page, page + 1) }
+        tryLoad()
     }
 
     override fun loadAfter(params: LoadParams<Int>, callback: LoadCallback<Int, Movie>) {
-        subscribeToMovies(page) {
-            /*
-            * Next page (if any at all).
-            * */
-            val nextPage = if (page < totalPages) ++page else null
+        page = params.key
+        load = {
+            val nextPage = if (params.key < totalPages) (params.key + 1) else null
             callback.onResult(it.movies, nextPage)
         }
+        tryLoad()
     }
 
     override fun loadBefore(params: LoadParams<Int>, callback: LoadCallback<Int, Movie>) {
@@ -50,18 +49,19 @@ class MoviesDataSource(private val repo: MoviesRepository) : PageKeyedDataSource
         * */
     }
 
+    fun retryLoad() {
+        tryLoad()
+    }
+
     fun dispose() {
         disposables.dispose()
     }
 
-    private inline fun subscribeToMovies(
-        page: Int,
-        crossinline routeToCallback: (MovieRequest) -> Unit
-    ) {
-        val moviesDisposable = repo.loadMovies(page)
+    private fun tryLoad() {
+        val disposableLoad = repo.loadMovies(page)
             .observeOn(AndroidSchedulers.mainThread())
             .doOnSubscribe {
-                //                TODO: what to do with this disposable??
+                // TODO: what to do with this disposable??
                 onStart()
                 disposables.add(it)
             }
@@ -69,10 +69,10 @@ class MoviesDataSource(private val repo: MoviesRepository) : PageKeyedDataSource
                 {
                     onSuccess()
                     totalPages = it.totalPages
-                    routeToCallback(it)
+                    load(it)
                 },
                 onError
             )
-        disposables.add(moviesDisposable)
+        disposables.add(disposableLoad)
     }
 }

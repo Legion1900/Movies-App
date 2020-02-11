@@ -1,9 +1,9 @@
 package com.legion1900.moviesapp.data.impl
 
 import com.legion1900.moviesapp.data.abs.MoviesRepository
-import com.legion1900.moviesapp.domain.abs.dto.MovieRequest
 import com.legion1900.moviesapp.data.impl.serialization.TMDBConfiguration
 import com.legion1900.moviesapp.data.impl.services.TMDBService
+import com.legion1900.moviesapp.domain.abs.dto.MoviePage
 import io.reactivex.Single
 import io.reactivex.schedulers.Schedulers
 import javax.inject.Inject
@@ -13,18 +13,18 @@ class TMDBRepo @Inject constructor(
     @Named(MoviesRepository.API_KEY) private val apiKey: String,
     private val service: TMDBService,
     @Named(MoviesRepository.POSTER_SIZE) val posterSize: TMDBConfiguration.Images.ImageSize,
-    @Named(MoviesRepository.BACKDROP_SIZE)val backdropSize: TMDBConfiguration.Images.ImageSize
+    @Named(MoviesRepository.BACKDROP_SIZE) val backdropSize: TMDBConfiguration.Images.ImageSize
 ) : MoviesRepository {
 
     private var apiConfig: TMDBConfiguration? = null
 
-    override fun loadMovies(page: Int): Single<MovieRequest> {
+    override fun loadMovies(page: Int): Single<MoviePage> {
         val query = TMDBService.buildFindQuery(apiKey, page)
         val movies = loadMovies(query)
         return if (apiConfig == null) movies.delaySubscription(loadConfig()) else movies
     }
 
-    private fun loadMovies(query: Map<String, String>): Single<MovieRequest> {
+    private fun loadMovies(query: Map<String, String>): Single<MoviePage> {
         return service.loadPopularMovies(query).subscribeOn(Schedulers.io()).map { response ->
             with(apiConfig!!) {
                 val currentPage = response.page
@@ -34,7 +34,7 @@ class TMDBRepo @Inject constructor(
                 val baseUrl = imageApi.baseUrl
                 val movies = ResultMovieConverter(baseUrl, posterSize, backdropSize)
                     .resultsToMovies(response.results)
-                MovieRequest(currentPage, totalPages, movies)
+                MoviePage(currentPage, totalPages, movies)
             }
         }
     }

@@ -21,6 +21,7 @@ class ResultMovieConverter(
         val poster = posterPath?.properPath(posterSize)
         val backdrop = backdropPath?.properPath(backdropSize)
         Movie(
+            id = id,
             title = title,
             originalTitle = originalTitle,
             avgVote = avgVote,

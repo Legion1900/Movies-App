@@ -16,7 +16,7 @@ import com.legion1900.moviesapp.di.App
 import com.legion1900.moviesapp.view.base.BaseFragment
 import com.legion1900.moviesapp.view.dialogs.HostUnreachableDialogFragment
 import com.legion1900.moviesapp.view.fragments.detailsscreen.MovieDetailsFragment
-import com.legion1900.moviesapp.view.fragments.mainscreen.adapters.MoviesAdapter
+import com.legion1900.moviesapp.view.fragments.mainscreen.adapters.MoviesPagedAdapter
 import javax.inject.Inject
 
 class PopularMoviesFragment : BaseFragment() {
@@ -26,7 +26,7 @@ class PopularMoviesFragment : BaseFragment() {
 
     private lateinit var binding: PopularFilmsFragmentBinding
 
-    private lateinit var adapter: MoviesAdapter
+    private lateinit var adapter: MoviesPagedAdapter
 
     private val viewModel: PopularMoviesViewModel by lazy {
         ViewModelProvider(this, viewModelFactory)[PopularMoviesViewModel::class.java]
@@ -35,7 +35,7 @@ class PopularMoviesFragment : BaseFragment() {
     private val errorCallback = object : HostUnreachableDialogFragment.PositiveCallback() {
         override fun onPositiveClick(dialog: DialogInterface, which: Int) {
             errorDialog.dismiss()
-            viewModel.loadMovies()
+            viewModel.invalidateSource()
         }
     }
 
@@ -72,8 +72,11 @@ class PopularMoviesFragment : BaseFragment() {
     }
 
     private fun initRecyclerView() {
+        viewModel.movies.observe(viewLifecycleOwner, Observer {
+            adapter.submitList(it)
+        })
         binding.run {
-            adapter = MoviesAdapter(::onMovieClick, glide)
+            adapter = MoviesPagedAdapter(glide, ::onMovieClick)
             movieList.adapter = adapter
             movieList.layoutManager = GridLayoutManager(context, 2)
         }
@@ -91,7 +94,7 @@ class PopularMoviesFragment : BaseFragment() {
     private fun onMovieClick(v: View) {
         val position = binding.movieList.getChildAdapterPosition(v)
         val movie = adapter.getMovie(position)
-        viewModel.pickMovie(movie)
+        viewModel.pickMovie(movie!!)
         val detailsFragment =
             MovieDetailsFragment()
 //        TODO: add simple transition animation

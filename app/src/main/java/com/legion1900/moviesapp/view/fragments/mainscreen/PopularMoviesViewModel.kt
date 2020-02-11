@@ -4,16 +4,20 @@ import android.view.View
 import android.widget.ProgressBar
 import androidx.databinding.BindingAdapter
 import androidx.lifecycle.*
+import androidx.paging.LivePagedListBuilder
+import androidx.paging.PagedList
 import androidx.recyclerview.widget.RecyclerView
-import com.legion1900.moviesapp.domain.abs.GetMoviesUseCase
 import com.legion1900.moviesapp.domain.abs.PickMovieUseCase
 import com.legion1900.moviesapp.domain.abs.dto.Movie
+import com.legion1900.moviesapp.domain.impl.MoviesDataSourceFactory
 import javax.inject.Inject
 
 class PopularMoviesViewModel @Inject constructor(
-    private val moviesProvider: GetMoviesUseCase,
+    private val moviesSourceFactory: MoviesDataSourceFactory,
     private val moviePicker: PickMovieUseCase
 ) : ViewModel() {
+
+    val movies: LiveData<PagedList<Movie>>
 
     private val progressBarVisibility = MutableLiveData<Boolean>()
 
@@ -21,18 +25,18 @@ class PopularMoviesViewModel @Inject constructor(
 
     private val isLoadingError = MutableLiveData<Boolean>()
 
-    private val movies = MutableLiveData<List<Movie>>()
-
     init {
         progressBarVisibility.value = true
         recyclerViewVisibility.value = false
         isLoadingError.value = false
-        moviesProvider.subscribe(::onStart, ::onSuccess, ::onError)
+        moviesSourceFactory.sourceLiveData.observeForever {
+            it.subscribe(::onStart, ::onSuccess, ::onError)
+        }
 
-        moviesProvider.getMovies()
+        movies = LivePagedListBuilder<Int, Movie>(moviesSourceFactory, 20).setFetchExecutor {
+            it.run()
+        }.build()
     }
-
-    fun getMovies(): LiveData<List<Movie>> = movies
 
     fun getProgressBarVisibility(): LiveData<Boolean> = progressBarVisibility
 
@@ -40,12 +44,12 @@ class PopularMoviesViewModel @Inject constructor(
 
     fun isLoadingError(): LiveData<Boolean> = isLoadingError
 
-    fun loadMovies(page: Int = 1) {
-        moviesProvider.getMovies(page)
-    }
-
     fun pickMovie(movie: Movie) {
         moviePicker.pick(movie)
+    }
+
+    fun invalidateSource() {
+        moviesSourceFactory.latestSource?.invalidate()
     }
 
     private fun onStart() {
@@ -54,8 +58,7 @@ class PopularMoviesViewModel @Inject constructor(
         progressBarVisibility.value = true
     }
 
-    private fun onSuccess(movies: List<Movie>) {
-        this.movies.value = movies
+    private fun onSuccess() {
         recyclerViewVisibility.value = true
         progressBarVisibility.value = false
     }
@@ -67,7 +70,7 @@ class PopularMoviesViewModel @Inject constructor(
 
     override fun onCleared() {
         super.onCleared()
-        moviesProvider.dispose()
+        moviesSourceFactory.latestSource?.dispose()
     }
 
     companion object {

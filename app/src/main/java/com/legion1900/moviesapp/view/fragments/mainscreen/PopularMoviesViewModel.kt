@@ -24,6 +24,7 @@ class PopularMoviesViewModel @Inject constructor(
     private val recyclerViewVisibility = MutableLiveData<Boolean>()
 
     private val isLoadingError = MutableLiveData<Boolean>()
+    private val networkState = MutableLiveData<LoadingState>()
 
     init {
         progressBarVisibility.value = true
@@ -33,10 +34,13 @@ class PopularMoviesViewModel @Inject constructor(
             it.subscribe(::onStart, ::onSuccess, ::onError)
         }
 
+        // TODO: use RxPagedListBuilder instead
         movies = LivePagedListBuilder<Int, Movie>(moviesSourceFactory, 20).setFetchExecutor {
             it.run()
         }.build()
     }
+
+    sealed class LoadingState
 
     fun getProgressBarVisibility(): LiveData<Boolean> = progressBarVisibility
 

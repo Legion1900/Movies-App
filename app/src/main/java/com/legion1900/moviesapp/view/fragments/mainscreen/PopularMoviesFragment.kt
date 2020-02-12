@@ -95,11 +95,13 @@ class PopularMoviesFragment : BaseFragment() {
         val position = binding.movieList.getChildAdapterPosition(v)
         val movie = adapter.getMovie(position)
         viewModel.pickMovie(movie!!)
-        val detailsFragment =
-            MovieDetailsFragment()
 //        TODO: add simple transition animation
         activity?.supportFragmentManager?.beginTransaction()?.apply {
-            replace(R.id.fragment_container, detailsFragment, MovieDetailsFragment.TAG)
+            replace(
+                R.id.fragment_container,
+                MovieDetailsFragment.newInstance(),
+                MovieDetailsFragment.TAG
+            )
             addToBackStack(null)
             commit()
         }

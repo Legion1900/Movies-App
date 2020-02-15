@@ -50,5 +50,7 @@ class MovieDetailsFragment : BaseFragment() {
             placeholder(R.drawable.img_preview)
             error(R.drawable.img_error)
         }
+        @JvmStatic
+        fun newInstance() = MovieDetailsFragment()
     }
 }

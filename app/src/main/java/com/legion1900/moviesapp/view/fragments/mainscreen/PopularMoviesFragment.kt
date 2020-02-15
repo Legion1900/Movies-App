@@ -11,6 +11,7 @@ import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.GridLayoutManager
 import com.bumptech.glide.RequestManager
 import com.legion1900.moviesapp.R
+import com.legion1900.moviesapp.data.abs.MoviePager
 import com.legion1900.moviesapp.databinding.PopularFilmsFragmentBinding
 import com.legion1900.moviesapp.di.App
 import com.legion1900.moviesapp.view.base.BaseFragment
@@ -39,6 +40,9 @@ class PopularMoviesFragment : BaseFragment() {
         }
     }
 
+    private val isDialogPresent
+        get() = childFragmentManager.findFragmentByTag(DIALOG_ERR_TAG) != null
+
     private val errorDialog: HostUnreachableDialogFragment = HostUnreachableDialogFragment.create(
         R.string.host_unreachable_msg,
         R.string.try_again,
@@ -58,17 +62,9 @@ class PopularMoviesFragment : BaseFragment() {
         binding =
             DataBindingUtil.inflate(inflater, R.layout.popular_films_fragment, container, false)
         initRecyclerView()
-        initDataBinding()
-        initLoadingErrorDialog()
+        initStateHandling()
 
         return binding.root
-    }
-
-    private fun initDataBinding() {
-        binding.run {
-            viewModel = this@PopularMoviesFragment.viewModel
-            lifecycleOwner = this@PopularMoviesFragment
-        }
     }
 
     private fun initRecyclerView() {
@@ -82,13 +78,33 @@ class PopularMoviesFragment : BaseFragment() {
         }
     }
 
-    private fun initLoadingErrorDialog() {
-        viewModel.isLoadingError().observe(viewLifecycleOwner, Observer {
-            val isDialogPresent = childFragmentManager.findFragmentByTag(DIALOG_ERR_TAG) != null
-            if (it && !isDialogPresent)
-                errorDialog.show(childFragmentManager, DIALOG_ERR_TAG)
-            else if (isDialogPresent) errorDialog.dismiss()
+    private fun initStateHandling() {
+        viewModel.loadingState.observe(viewLifecycleOwner, Observer {
+            when (it) {
+                MoviePager.LoadingState.IDLE -> onSuccess()
+                MoviePager.LoadingState.LOADING -> onLoading()
+                MoviePager.LoadingState.ERROR -> onError()
+            }
         })
+    }
+
+    private fun onSuccess() {
+        with(binding) {
+            if (isDialogPresent) errorDialog.dismiss()
+            loadingAnimation.visibility = View.GONE
+        }
+    }
+
+    private fun onLoading() {
+        if (isDialogPresent) errorDialog.dismiss()
+        binding.loadingAnimation.visibility = View.VISIBLE
+    }
+
+    private fun onError() {
+        binding.loadingAnimation.visibility = View.GONE
+        if (!isDialogPresent) {
+            errorDialog.show(childFragmentManager, DIALOG_ERR_TAG)
+        }
     }
 
     private fun onMovieClick(v: View) {

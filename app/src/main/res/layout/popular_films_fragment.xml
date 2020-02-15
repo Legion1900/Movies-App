@@ -3,13 +3,6 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools">
 
-    <data>
-
-        <variable
-            name="viewModel"
-            type="com.legion1900.moviesapp.view.fragments.mainscreen.PopularMoviesViewModel" />
-    </data>
-
     <!--TODO: add SwipeRefresh layout and RecyclerView placeholder to display error if no data was loaded-->
 
     <androidx.constraintlayout.widget.ConstraintLayout
@@ -22,11 +15,9 @@
             android:id="@+id/movie_list"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:visibility="invisible"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintTop_toTopOf="parent"
-            app:layout_constraintVertical_bias="0"
-            app:visibility="@{viewModel.recyclerViewVisibility}" />
+            app:layout_constraintVertical_bias="0" />
 
         <ProgressBar
             android:id="@+id/loading_animation"
@@ -38,8 +29,7 @@
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintHeight_percent=".2"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent"
-            app:visibility="@{viewModel.progressBarVisibility}" />
+            app:layout_constraintTop_toTopOf="parent" />
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 </layout>

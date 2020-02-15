@@ -2,6 +2,7 @@ package com.legion1900.moviesapp.di
 
 import com.legion1900.moviesapp.data.abs.MoviesRepository
 import com.legion1900.moviesapp.data.impl.serialization.TMDBConfiguration
+import com.legion1900.moviesapp.di.modules.ConfigModule
 import com.legion1900.moviesapp.di.modules.NetworkModule
 import com.legion1900.moviesapp.di.modules.RepoModule
 import com.legion1900.moviesapp.di.modules.UseCaseModule
@@ -19,6 +20,7 @@ import javax.inject.Singleton
         ViewModelModule::class,
         NetworkModule::class,
         RepoModule::class,
+        ConfigModule::class,
         UseCaseModule::class,
         FragmentComponent.InstallModule::class
     ]

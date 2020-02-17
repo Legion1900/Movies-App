@@ -10,14 +10,17 @@ import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.GridLayoutManager
 import com.bumptech.glide.RequestManager
+import com.hannesdorfmann.adapterdelegates4.paging.PagedListDelegationAdapter
 import com.legion1900.moviesapp.R
 import com.legion1900.moviesapp.data.abs.MoviePager
 import com.legion1900.moviesapp.databinding.PopularFilmsFragmentBinding
 import com.legion1900.moviesapp.di.App
+import com.legion1900.moviesapp.domain.abs.dto.Movie
 import com.legion1900.moviesapp.view.base.BaseFragment
 import com.legion1900.moviesapp.view.dialogs.HostUnreachableDialogFragment
 import com.legion1900.moviesapp.view.fragments.detailsscreen.MovieDetailsFragment
-import com.legion1900.moviesapp.view.fragments.mainscreen.adapters.MoviesPagedAdapter
+import com.legion1900.moviesapp.view.fragments.mainscreen.adapters.buildItemDiffCallback
+import com.legion1900.moviesapp.view.fragments.mainscreen.adapters.buildMovieAdapter
 import javax.inject.Inject
 
 class PopularMoviesFragment : BaseFragment() {
@@ -27,7 +30,7 @@ class PopularMoviesFragment : BaseFragment() {
 
     private lateinit var binding: PopularFilmsFragmentBinding
 
-    private lateinit var adapter: MoviesPagedAdapter
+    private lateinit var adapter: PagedListDelegationAdapter<Movie>
 
     private val viewModel: PopularMoviesViewModel by lazy {
         ViewModelProvider(this, viewModelFactory)[PopularMoviesViewModel::class.java]
@@ -68,22 +71,27 @@ class PopularMoviesFragment : BaseFragment() {
     }
 
     private fun initRecyclerView() {
-        viewModel.movies.observe(viewLifecycleOwner, Observer {
-            adapter.submitList(it)
-        })
         binding.run {
-            adapter = MoviesPagedAdapter(glide, ::onMovieClick)
+            adapter = PagedListDelegationAdapter<Movie>(
+                buildItemDiffCallback(),
+                buildMovieAdapter(glide, ::onMovieClick)
+            )
             movieList.adapter = adapter
             movieList.layoutManager = GridLayoutManager(context, 2)
         }
+        viewModel.movies.observe(viewLifecycleOwner, Observer {
+            adapter.submitList(it)
+        })
     }
 
     private fun initStateHandling() {
         viewModel.loadingState.observe(viewLifecycleOwner, Observer {
-            when (it) {
-                MoviePager.LoadingState.IDLE -> onSuccess()
-                MoviePager.LoadingState.LOADING -> onLoading()
-                MoviePager.LoadingState.ERROR -> onError()
+            it?.also {
+                when (it) {
+                    MoviePager.LoadingState.IDLE -> onSuccess()
+                    MoviePager.LoadingState.LOADING -> onLoading()
+                    MoviePager.LoadingState.ERROR -> onError()
+                }
             }
         })
     }
@@ -107,10 +115,8 @@ class PopularMoviesFragment : BaseFragment() {
         }
     }
 
-    private fun onMovieClick(v: View) {
-        val position = binding.movieList.getChildAdapterPosition(v)
-        val movie = adapter.getMovie(position)
-        viewModel.pickMovie(movie!!)
+    private fun onMovieClick(movie: Movie) {
+        viewModel.pickMovie(movie)
 //        TODO: add simple transition animation
         activity?.supportFragmentManager?.beginTransaction()?.apply {
             replace(

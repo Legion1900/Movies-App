@@ -1,6 +1,5 @@
 package com.legion1900.moviesapp.view.fragments.mainscreen.adapters
 
-import android.util.Log
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.RecyclerView
 import com.hannesdorfmann.adapterdelegates4.AdapterDelegatesManager
@@ -8,14 +7,17 @@ import com.hannesdorfmann.adapterdelegates4.paging.PagedListDelegationAdapter
 import com.legion1900.moviesapp.data.abs.MoviePager
 import com.legion1900.moviesapp.domain.abs.dto.Movie
 
-
-// TODO: use public PagedListDelegationAdapter(AdapterDelegatesManager<List<T>> ,DiffUtil.ItemCallback<T>)
-// TODO: set all adapters into Manager
 class BottomNotifierMovieAdapter(
     itemCallback: DiffUtil.ItemCallback<Movie>,
-    var currentState: MoviePager.LoadingState,
+    state: MoviePager.LoadingState,
     manager: AdapterDelegatesManager<List<Movie>>
 ) : PagedListDelegationAdapter<Movie>(manager, itemCallback) {
+
+    var currentState = state
+        set(value) {
+            field = value
+            notifyDataSetChanged()
+        }
 
     private val isLoading
         get() = currentState == MoviePager.LoadingState.LOADING
@@ -33,17 +35,11 @@ class BottomNotifierMovieAdapter(
         val isError = currentState == MoviePager.LoadingState.ERROR
         val isExtra = position == (currentList?.size ?: 0)
 
-        Log.d("test", "isExtra from getItemViewType($position): $isExtra")
-        Log.d("test", "isError: $isError")
-        Log.d("test", "isLoading: $isLoading")
-
-        val out = when {
+        return when {
             isExtra && isLoading -> VIEW_TYPE_LOADING
             isExtra && isError -> VIEW_TYPE_ERROR
             else -> super.getItemViewType(position)
         }
-        Log.d("test", "view type: $out")
-        return out
     }
 
     override fun getItemCount(): Int {

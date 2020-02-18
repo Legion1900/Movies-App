@@ -1,5 +1,6 @@
 package com.legion1900.moviesapp.view.fragments.mainscreen.adapters
 
+import android.util.Log
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.RecyclerView
 import com.hannesdorfmann.adapterdelegates4.AdapterDelegatesManager
@@ -16,7 +17,7 @@ class BottomNotifierMovieAdapter(
     var currentState = state
         set(value) {
             field = value
-            notifyDataSetChanged()
+            notifyItemChanged(itemCount)
         }
 
     private val isLoading

@@ -21,7 +21,10 @@ android {
         versionName "1.0"
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
 
+        vectorDrawables.useSupportLibrary = true
+
         buildConfigField("String", "API_KEY", apiKeyProperties['TMDB_KEY'])
+        buildConfigField("String", "BASE_URL", "\"https://api.themoviedb.org/3/\"")
     }
 
     dataBinding {
@@ -40,6 +43,7 @@ dependencies {
     def dagger_version = '2.25.4'
     def retrofit_version = '2.6.1'
     def paging_version = "2.1.1"
+    def adapter_delegate_version = "4.2.0"
 
     implementation fileTree(dir: 'libs', include: ['*.jar'])
     implementation "org.jetbrains.kotlin:kotlin-stdlib-jdk7:$kotlin_version"
@@ -68,6 +72,10 @@ dependencies {
     implementation 'com.squareup.okhttp3:logging-interceptor:4.2.1'
 
     implementation "androidx.paging:paging-runtime:$paging_version"
+    implementation "androidx.paging:paging-rxjava2:$paging_version"
+
+    implementation "com.hannesdorfmann:adapterdelegates4-kotlin-dsl:$adapter_delegate_version"
+    implementation "com.hannesdorfmann:adapterdelegates4-pagination:$adapter_delegate_version"
 
     testImplementation 'junit:junit:4.12'
     androidTestImplementation 'androidx.test.ext:junit:1.1.1'

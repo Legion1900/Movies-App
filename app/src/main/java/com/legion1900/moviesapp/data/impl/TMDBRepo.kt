@@ -10,7 +10,6 @@ import javax.inject.Inject
 import javax.inject.Named
 
 class TMDBRepo @Inject constructor(
-    @Named(MoviesRepository.API_KEY) private val apiKey: String,
     private val service: TMDBService,
     @Named(MoviesRepository.POSTER_SIZE) val posterSize: TMDBConfiguration.Images.ImageSize,
     @Named(MoviesRepository.BACKDROP_SIZE) val backdropSize: TMDBConfiguration.Images.ImageSize
@@ -19,7 +18,7 @@ class TMDBRepo @Inject constructor(
     private var apiConfig: TMDBConfiguration? = null
 
     override fun loadMovies(page: Int): Single<MoviePage> {
-        val query = TMDBService.buildFindQuery(apiKey, page)
+        val query = TMDBService.buildFindQuery(page)
         val movies = loadMovies(query)
         return if (apiConfig == null) movies.delaySubscription(loadConfig()) else movies
     }
@@ -40,7 +39,7 @@ class TMDBRepo @Inject constructor(
     }
 
     private fun loadConfig(): Single<TMDBConfiguration> {
-        return service.loadApiConfig(apiKey).subscribeOn(Schedulers.io()).doOnSuccess {
+        return service.loadApiConfig().subscribeOn(Schedulers.io()).doOnSuccess {
             apiConfig = it
         }
     }

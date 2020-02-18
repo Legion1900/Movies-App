@@ -6,8 +6,9 @@ import com.google.gson.JsonDeserializer
 import com.google.gson.JsonElement
 import com.legion1900.moviesapp.data.impl.serialization.TMDBConfiguration
 import java.lang.reflect.Type
+import javax.inject.Inject
 
-class ConfigurationDeserializer : JsonDeserializer<TMDBConfiguration> {
+class ConfigurationDeserializer @Inject constructor() : JsonDeserializer<TMDBConfiguration> {
     override fun deserialize(
         json: JsonElement,
         typeOfT: Type?,

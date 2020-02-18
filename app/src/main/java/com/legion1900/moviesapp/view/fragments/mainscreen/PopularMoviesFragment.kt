@@ -10,7 +10,7 @@ import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.GridLayoutManager
 import com.bumptech.glide.RequestManager
-import com.hannesdorfmann.adapterdelegates4.paging.PagedListDelegationAdapter
+import com.hannesdorfmann.adapterdelegates4.AdapterDelegatesManager
 import com.legion1900.moviesapp.R
 import com.legion1900.moviesapp.data.abs.MoviePager
 import com.legion1900.moviesapp.databinding.PopularFilmsFragmentBinding
@@ -19,8 +19,7 @@ import com.legion1900.moviesapp.domain.abs.dto.Movie
 import com.legion1900.moviesapp.view.base.BaseFragment
 import com.legion1900.moviesapp.view.dialogs.HostUnreachableDialogFragment
 import com.legion1900.moviesapp.view.fragments.detailsscreen.MovieDetailsFragment
-import com.legion1900.moviesapp.view.fragments.mainscreen.adapters.buildItemDiffCallback
-import com.legion1900.moviesapp.view.fragments.mainscreen.adapters.buildMovieAdapter
+import com.legion1900.moviesapp.view.fragments.mainscreen.adapters.*
 import javax.inject.Inject
 
 class PopularMoviesFragment : BaseFragment() {
@@ -30,7 +29,7 @@ class PopularMoviesFragment : BaseFragment() {
 
     private lateinit var binding: PopularFilmsFragmentBinding
 
-    private lateinit var adapter: PagedListDelegationAdapter<Movie>
+    private lateinit var adapter: BottomNotifierMovieAdapter
 
     private val viewModel: PopularMoviesViewModel by lazy {
         ViewModelProvider(this, viewModelFactory)[PopularMoviesViewModel::class.java]
@@ -72,11 +71,31 @@ class PopularMoviesFragment : BaseFragment() {
 
     private fun initRecyclerView() {
         binding.run {
-            adapter = PagedListDelegationAdapter<Movie>(
+            val manager = AdapterDelegatesManager<List<Movie>>()
+            manager.addDelegate(VIEW_TYPE_MOVIE, buildMovieDelegate(glide, ::onMovieClick))
+                .addDelegate(
+                    VIEW_TYPE_LOADING,
+                    buildLoadingDelegate()
+                )
+                .addDelegate(
+                    VIEW_TYPE_ERROR,
+                    buildErrorDelegate()
+                )
+            adapter = BottomNotifierMovieAdapter(
                 buildItemDiffCallback(),
-                buildMovieAdapter(glide, ::onMovieClick)
+                MoviePager.LoadingState.LOADING,
+                manager
             )
             movieList.adapter = adapter
+            val layoutManager = GridLayoutManager(context, 2)
+            layoutManager.spanSizeLookup = object : GridLayoutManager.SpanSizeLookup() {
+                override fun getSpanSize(position: Int): Int {
+                    val isLoading = viewModel.loadingState.value == MoviePager.LoadingState.LOADING
+                    val isError = viewModel.loadingState.value == MoviePager.LoadingState.ERROR
+                    return if ((isLoading || isError) && position >= adapter.itemCount) 2 else 1
+                }
+
+            }
             movieList.layoutManager = GridLayoutManager(context, 2)
         }
         viewModel.movies.observe(viewLifecycleOwner, Observer {
@@ -86,13 +105,14 @@ class PopularMoviesFragment : BaseFragment() {
 
     private fun initStateHandling() {
         viewModel.loadingState.observe(viewLifecycleOwner, Observer {
-            it?.also {
-                when (it) {
-                    MoviePager.LoadingState.IDLE -> onSuccess()
-                    MoviePager.LoadingState.LOADING -> onLoading()
-                    MoviePager.LoadingState.ERROR -> onError()
-                }
-            }
+            adapter.currentState = it
+//            it?.also {
+//                when (it) {
+//                    MoviePager.LoadingState.IDLE -> onSuccess()
+//                    MoviePager.LoadingState.LOADING -> onLoading()
+//                    MoviePager.LoadingState.ERROR -> onError()
+//                }
+//            }
         })
     }
 

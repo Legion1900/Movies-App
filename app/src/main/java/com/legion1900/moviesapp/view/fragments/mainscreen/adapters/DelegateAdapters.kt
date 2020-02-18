@@ -1,5 +1,6 @@
 package com.legion1900.moviesapp.view.fragments.mainscreen.adapters
 
+import android.widget.Button
 import android.widget.ImageView
 import android.widget.TextView
 import androidx.recyclerview.widget.DiffUtil
@@ -33,10 +34,12 @@ fun buildLoadingDelegate() =
         layout = R.layout.loading_view_holder
     ) { /* Nothing to do here. */ }
 
-fun buildErrorDelegate() =
+fun buildErrorDelegate(retry: () -> Unit) =
     adapterDelegate<Movie, Movie>(
         layout = R.layout.error_view_holder
-    ) { /* Nothing to do here. */ }
+    ) {
+        findViewById<Button>(R.id.retry_btn).setOnClickListener { retry() }
+    }
 
 
 fun buildItemDiffCallback() = object : DiffUtil.ItemCallback<Movie>() {

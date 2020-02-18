@@ -1,8 +1,8 @@
 package com.legion1900.moviesapp.view.fragments.mainscreen
 
 import android.content.DialogInterface
+import android.content.res.Configuration
 import android.os.Bundle
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -35,6 +35,13 @@ class PopularMoviesFragment : BaseFragment() {
     private val viewModel: PopularMoviesViewModel by lazy {
         ViewModelProvider(this, viewModelFactory)[PopularMoviesViewModel::class.java]
     }
+
+    private val spanCount: Int
+        get() {
+            val orientation = resources.configuration.orientation
+            return if (orientation == Configuration.ORIENTATION_PORTRAIT) PORTRAIT_SPAN_CNT
+            else LANDSCAPE_SPAN_CNT
+        }
 
     private val errorCallback = object : HostUnreachableDialogFragment.PositiveCallback() {
         override fun onPositiveClick(dialog: DialogInterface, which: Int) {
@@ -71,52 +78,45 @@ class PopularMoviesFragment : BaseFragment() {
     }
 
     private fun initRecyclerView() {
+        initAdapter()
         binding.run {
-            val manager = AdapterDelegatesManager<List<Movie>>()
-            manager.addDelegate(VIEW_TYPE_MOVIE, buildMovieDelegate(glide, ::onMovieClick))
-                .addDelegate(
-                    VIEW_TYPE_LOADING,
-                    buildLoadingDelegate()
-                )
-                .addDelegate(
-                    VIEW_TYPE_ERROR,
-                    buildErrorDelegate()
-                )
-            adapter = BottomNotifierMovieAdapter(
-                buildItemDiffCallback(),
-                MoviePager.LoadingState.LOADING,
-                manager
-            )
             movieList.adapter = adapter
-            val layoutManager = GridLayoutManager(context, 2)
-            layoutManager.spanSizeLookup = object : GridLayoutManager.SpanSizeLookup() {
-                override fun getSpanSize(position: Int): Int {
-                    val isLoading = viewModel.loadingState.value == MoviePager.LoadingState.LOADING
-                    val isError = viewModel.loadingState.value == MoviePager.LoadingState.ERROR
-
-                    Log.d("test", "position: $position, itemCount: ${adapter.itemCount}")
-
-                    return if ((isLoading || isError) && position == adapter.itemCount - 1) 2 else 1
-                }
-
-            }
-            movieList.layoutManager = layoutManager
+            movieList.layoutManager = buildFooterGridLayoutManager()
         }
         viewModel.movies.observe(viewLifecycleOwner, Observer {
             adapter.submitList(it)
         })
     }
 
+    private fun initAdapter() {
+        val manager = AdapterDelegatesManager<List<Movie>>()
+            .addDelegate(VIEW_TYPE_MOVIE, buildMovieDelegate(glide, ::onMovieClick))
+            .addDelegate(VIEW_TYPE_LOADING, buildLoadingDelegate())
+            .addDelegate(VIEW_TYPE_ERROR, buildErrorDelegate(viewModel::retryLoad))
+        adapter = BottomNotifierMovieAdapter(
+            buildItemDiffCallback(),
+            MoviePager.LoadingState.LOADING,
+            manager
+        )
+    }
+
+    private fun buildFooterGridLayoutManager() = GridLayoutManager(context, spanCount).apply {
+        spanSizeLookup = object : GridLayoutManager.SpanSizeLookup() {
+            override fun getSpanSize(position: Int): Int {
+                val isLoading = viewModel.loadingState.value == MoviePager.LoadingState.LOADING
+                val isError = viewModel.loadingState.value == MoviePager.LoadingState.ERROR
+                return if ((isLoading || isError) && position == adapter.itemCount - 1) spanCount
+                else 1
+            }
+        }
+    }
+
     private fun initStateHandling() {
         viewModel.loadingState.observe(viewLifecycleOwner, Observer {
             adapter.currentState = it
-//            it?.also {
-//                when (it) {
-//                    MoviePager.LoadingState.IDLE -> onSuccess()
-//                    MoviePager.LoadingState.LOADING -> onLoading()
-//                    MoviePager.LoadingState.ERROR -> onError()
-//                }
-//            }
+            if (adapter.itemCount > 0) {
+                // TODO: add ProgressBar and SwipeRefresh logic here
+            }
         })
     }
 
@@ -155,5 +155,8 @@ class PopularMoviesFragment : BaseFragment() {
 
     companion object {
         const val DIALOG_ERR_TAG = "host_unreachable"
+
+        private const val PORTRAIT_SPAN_CNT = 2
+        private const val LANDSCAPE_SPAN_CNT = 4
     }
 }

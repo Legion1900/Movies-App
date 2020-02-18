@@ -2,6 +2,7 @@ package com.legion1900.moviesapp.view.fragments.mainscreen
 
 import android.content.res.Configuration
 import android.os.Bundle
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -56,6 +57,9 @@ class PopularMoviesFragment : BaseFragment() {
             DataBindingUtil.inflate(inflater, R.layout.popular_films_fragment, container, false)
         binding.errorMsg.findViewById<Button>(R.id.retry_btn)
             .setOnClickListener { viewModel.retryLoad() }
+        binding.loadingAnimation.visibility =
+            if (viewModel.movies.value?.size ?: 0 == 0) View.VISIBLE else View.GONE
+
         initRecyclerView()
         initStateHandling()
 

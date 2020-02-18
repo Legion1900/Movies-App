@@ -1,11 +1,11 @@
 package com.legion1900.moviesapp.view.fragments.mainscreen
 
-import android.content.DialogInterface
 import android.content.res.Configuration
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.Button
 import androidx.databinding.DataBindingUtil
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
@@ -18,7 +18,6 @@ import com.legion1900.moviesapp.databinding.PopularFilmsFragmentBinding
 import com.legion1900.moviesapp.di.App
 import com.legion1900.moviesapp.domain.abs.dto.Movie
 import com.legion1900.moviesapp.view.base.BaseFragment
-import com.legion1900.moviesapp.view.dialogs.HostUnreachableDialogFragment
 import com.legion1900.moviesapp.view.fragments.detailsscreen.MovieDetailsFragment
 import com.legion1900.moviesapp.view.fragments.mainscreen.adapters.*
 import javax.inject.Inject
@@ -43,22 +42,6 @@ class PopularMoviesFragment : BaseFragment() {
             else LANDSCAPE_SPAN_CNT
         }
 
-    private val errorCallback = object : HostUnreachableDialogFragment.PositiveCallback() {
-        override fun onPositiveClick(dialog: DialogInterface, which: Int) {
-            errorDialog.dismiss()
-            viewModel.retryLoad()
-        }
-    }
-
-    private val isDialogPresent
-        get() = childFragmentManager.findFragmentByTag(DIALOG_ERR_TAG) != null
-
-    private val errorDialog: HostUnreachableDialogFragment = HostUnreachableDialogFragment.create(
-        R.string.host_unreachable_msg,
-        R.string.try_again,
-        errorCallback
-    )
-
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         App.appComponent.fragmentComponentBuilder().setFragment(this).build().inject(this)
@@ -71,6 +54,8 @@ class PopularMoviesFragment : BaseFragment() {
     ): View? {
         binding =
             DataBindingUtil.inflate(inflater, R.layout.popular_films_fragment, container, false)
+        binding.errorMsg.findViewById<Button>(R.id.retry_btn)
+            .setOnClickListener { viewModel.retryLoad() }
         initRecyclerView()
         initStateHandling()
 
@@ -114,28 +99,34 @@ class PopularMoviesFragment : BaseFragment() {
     private fun initStateHandling() {
         viewModel.loadingState.observe(viewLifecycleOwner, Observer {
             adapter.currentState = it
-            if (adapter.itemCount > 0) {
-                // TODO: add ProgressBar and SwipeRefresh logic here
+            if (viewModel.movies.value?.size == 0) {
+                when (it) {
+                    MoviePager.LoadingState.LOADING -> onLoading()
+                    MoviePager.LoadingState.IDLE -> onSuccess()
+                    MoviePager.LoadingState.ERROR -> onError()
+                }
             }
         })
     }
 
     private fun onSuccess() {
         with(binding) {
-            if (isDialogPresent) errorDialog.dismiss()
             loadingAnimation.visibility = View.GONE
+            errorMsg.visibility = View.GONE
         }
     }
 
     private fun onLoading() {
-        if (isDialogPresent) errorDialog.dismiss()
-        binding.loadingAnimation.visibility = View.VISIBLE
+        binding.run {
+            errorMsg.visibility = View.GONE
+            loadingAnimation.visibility = View.VISIBLE
+        }
     }
 
     private fun onError() {
-        binding.loadingAnimation.visibility = View.GONE
-        if (!isDialogPresent) {
-            errorDialog.show(childFragmentManager, DIALOG_ERR_TAG)
+        binding.run {
+            loadingAnimation.visibility = View.GONE
+            errorMsg.visibility = View.VISIBLE
         }
     }
 
@@ -154,8 +145,6 @@ class PopularMoviesFragment : BaseFragment() {
     }
 
     companion object {
-        const val DIALOG_ERR_TAG = "host_unreachable"
-
         private const val PORTRAIT_SPAN_CNT = 2
         private const val LANDSCAPE_SPAN_CNT = 4
     }

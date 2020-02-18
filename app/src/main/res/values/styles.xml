@@ -21,4 +21,13 @@
         <item name="android:textStyle">bold</item>
     </style>
 
+    <style name="MovieCard">
+        <item name="android:layout_width">match_parent</item>
+        <item name="android:layout_height">wrap_content</item>
+        <item name="android:layout_marginStart">@dimen/small</item>
+        <item name="android:layout_marginTop">@dimen/middle</item>
+        <item name="android:layout_marginEnd">@dimen/small</item>
+        <item name="android:layout_marginBottom">@dimen/middle</item>
+    </style>
+
 </resources>

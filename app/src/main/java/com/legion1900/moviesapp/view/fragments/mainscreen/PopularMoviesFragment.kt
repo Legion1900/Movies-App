@@ -2,6 +2,7 @@ package com.legion1900.moviesapp.view.fragments.mainscreen
 
 import android.content.DialogInterface
 import android.os.Bundle
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -92,11 +93,14 @@ class PopularMoviesFragment : BaseFragment() {
                 override fun getSpanSize(position: Int): Int {
                     val isLoading = viewModel.loadingState.value == MoviePager.LoadingState.LOADING
                     val isError = viewModel.loadingState.value == MoviePager.LoadingState.ERROR
-                    return if ((isLoading || isError) && position >= adapter.itemCount) 2 else 1
+
+                    Log.d("test", "position: $position, itemCount: ${adapter.itemCount}")
+
+                    return if ((isLoading || isError) && position == adapter.itemCount - 1) 2 else 1
                 }
 
             }
-            movieList.layoutManager = GridLayoutManager(context, 2)
+            movieList.layoutManager = layoutManager
         }
         viewModel.movies.observe(viewLifecycleOwner, Observer {
             adapter.submitList(it)

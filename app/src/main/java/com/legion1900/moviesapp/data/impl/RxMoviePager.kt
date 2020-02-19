@@ -7,6 +7,7 @@ import androidx.paging.RxPagedListBuilder
 import com.legion1900.moviesapp.data.abs.MoviePager
 import com.legion1900.moviesapp.data.impl.paging.MoviesDataSourceFactory
 import com.legion1900.moviesapp.domain.dto.Movie
+import io.reactivex.BackpressureStrategy
 import io.reactivex.disposables.CompositeDisposable
 import javax.inject.Inject
 
@@ -27,7 +28,10 @@ class RxMoviePager @Inject constructor(
     override val page: LiveData<PagedList<Movie>> = _page
 
     override fun providePageSource() {
-        val observable = RxPagedListBuilder<Int, Movie>(factory, config).buildObservable()
+        val observable = RxPagedListBuilder<Int, Movie>(
+            factory,
+            config
+        ).buildFlowable(BackpressureStrategy.MISSING)
         val d = observable.subscribe { _page.value = it }
         disposables.add(d)
     }

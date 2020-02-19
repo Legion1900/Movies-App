@@ -2,7 +2,6 @@ package com.legion1900.moviesapp.view.fragments.mainscreen
 
 import android.content.res.Configuration
 import android.os.Bundle
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -135,12 +134,12 @@ class PopularMoviesFragment : BaseFragment() {
     }
 
     private fun onMovieClick(movie: Movie) {
-        viewModel.pickMovie(movie)
+//        viewModel.pickMovie(movie)
 //        TODO: add simple transition animation
         activity?.supportFragmentManager?.beginTransaction()?.apply {
             replace(
                 R.id.fragment_container,
-                MovieDetailsFragment.newInstance(),
+                MovieDetailsFragment.newInstance(movie),
                 MovieDetailsFragment.TAG
             )
             addToBackStack(null)

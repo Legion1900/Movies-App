@@ -7,10 +7,10 @@ import android.view.ViewGroup
 import androidx.databinding.DataBindingUtil
 import androidx.lifecycle.ViewModelProvider
 import com.bumptech.glide.RequestManager
-import com.bumptech.glide.request.RequestOptions
 import com.legion1900.moviesapp.R
 import com.legion1900.moviesapp.databinding.MovieDetailsFragmentBinding
 import com.legion1900.moviesapp.di.App
+import com.legion1900.moviesapp.domain.abs.dto.Movie
 import com.legion1900.moviesapp.view.base.BaseFragment
 import javax.inject.Inject
 
@@ -27,6 +27,9 @@ class MovieDetailsFragment : BaseFragment() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         App.appComponent.fragmentComponentBuilder().setFragment(this).build().inject(this)
+        if (viewModel.movie == null) {
+            viewModel.movie = arguments?.getParcelable(ARGS_MOVIE)
+        }
     }
 
     override fun onCreateView(
@@ -37,20 +40,19 @@ class MovieDetailsFragment : BaseFragment() {
             DataBindingUtil.inflate(inflater, R.layout.movie_details_fragment, container, false)
         binding.viewModel = viewModel
         binding.lifecycleOwner = viewLifecycleOwner
-        glide.setDefaultRequestOptions(glideOptions)
-            .load(viewModel.backdropUrl)
-            .into(binding.backdropImage)
+        glide.load(viewModel.movie!!.backdropPath).into(binding.backdropImage)
         return binding.root
     }
 
     companion object {
         const val TAG = "movie_details"
+        const val ARGS_MOVIE = "selected_movie"
 
-        private val glideOptions = RequestOptions().apply {
-            placeholder(R.drawable.img_preview)
-            error(R.drawable.img_error)
-        }
         @JvmStatic
-        fun newInstance() = MovieDetailsFragment()
+        fun newInstance(movie: Movie) = MovieDetailsFragment().apply {
+            arguments = Bundle().apply {
+                putParcelable(ARGS_MOVIE, movie)
+            }
+        }
     }
 }

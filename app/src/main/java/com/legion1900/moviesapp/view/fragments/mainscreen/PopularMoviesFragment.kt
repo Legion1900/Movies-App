@@ -60,10 +60,6 @@ class PopularMoviesFragment : Fragment() {
     ): View? {
         binding =
             DataBindingUtil.inflate(inflater, R.layout.popular_films_fragment, container, false)
-        binding.errorMsg.findViewById<Button>(R.id.retry_btn)
-            .setOnClickListener { viewModel.retryLoad() }
-        binding.loadingAnimation.visibility =
-            if (viewModel.movies.value?.size ?: 0 == 0) View.VISIBLE else View.GONE
 
         initRecyclerView()
         initStateHandling()
@@ -106,6 +102,7 @@ class PopularMoviesFragment : Fragment() {
     }
 
     private fun initStateHandling() {
+        initEmptyScreenError()
         viewModel.loadingState.observe(viewLifecycleOwner, Observer {
             adapter.currentState = it
             if (viewModel.movies.value?.size == 0) {
@@ -116,6 +113,15 @@ class PopularMoviesFragment : Fragment() {
                 }
             }
         })
+    }
+
+    private fun initEmptyScreenError() {
+        binding.run {
+            errorMsg.findViewById<Button>(R.id.retry_btn)
+                .setOnClickListener { viewModel.retryLoad() }
+            loadingAnimation.visibility =
+                if (viewModel.movies.value?.size ?: 0 == 0) View.VISIBLE else View.GONE
+        }
     }
 
     private fun onSuccess() {

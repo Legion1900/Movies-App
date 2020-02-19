@@ -19,8 +19,9 @@ import retrofit2.converter.gson.GsonConverterFactory
 import javax.inject.Singleton
 
 @Module
-class NetworkModule {
+object NetworkModule {
 
+    @JvmStatic
     @Provides
     fun provideRxAdapterCallFactory(): CallAdapter.Factory = RxJava2CallAdapterFactory.create()
 
@@ -33,6 +34,7 @@ class NetworkModule {
         return GsonConverterFactory.create(gson)
     }
 
+    @JvmStatic
     @Singleton
     @Provides
     fun provideRetrofit(
@@ -51,17 +53,20 @@ class NetworkModule {
             .build()
     }
 
+    @JvmStatic
     @Singleton
     @Provides
     fun provideTMDBService(retrofit: Retrofit): TMDBService {
         return retrofit.create(TMDBService::class.java)
     }
 
+    @JvmStatic
     @Provides
     @IntoSet
     fun provideLoggingInterceptor(): Interceptor =
         HttpLoggingInterceptor().apply { level = HttpLoggingInterceptor.Level.BODY }
 
+    @JvmStatic
     @Provides
     @IntoSet
     fun provideApiKeyInterceptor(): Interceptor {

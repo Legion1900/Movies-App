@@ -2,12 +2,12 @@ package com.legion1900.moviesapp.view.fragments.mainscreen
 
 import android.content.res.Configuration
 import android.os.Bundle
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.Button
 import androidx.databinding.DataBindingUtil
+import androidx.fragment.app.Fragment
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.GridLayoutManager
@@ -17,13 +17,18 @@ import com.legion1900.moviesapp.R
 import com.legion1900.moviesapp.data.abs.MoviePager
 import com.legion1900.moviesapp.databinding.PopularFilmsFragmentBinding
 import com.legion1900.moviesapp.di.App
-import com.legion1900.moviesapp.domain.abs.dto.Movie
-import com.legion1900.moviesapp.view.base.BaseFragment
+import com.legion1900.moviesapp.domain.dto.Movie
+import com.legion1900.moviesapp.view.base.ViewModelFactory
 import com.legion1900.moviesapp.view.fragments.detailsscreen.MovieDetailsFragment
 import com.legion1900.moviesapp.view.fragments.mainscreen.adapters.*
 import javax.inject.Inject
+import javax.inject.Named
 
-class PopularMoviesFragment : BaseFragment() {
+class PopularMoviesFragment : Fragment() {
+
+    @Inject
+    @Named(QUALIFIER)
+    lateinit var viewModelFactory: ViewModelFactory
 
     @Inject
     lateinit var glide: RequestManager
@@ -55,10 +60,6 @@ class PopularMoviesFragment : BaseFragment() {
     ): View? {
         binding =
             DataBindingUtil.inflate(inflater, R.layout.popular_films_fragment, container, false)
-        binding.errorMsg.findViewById<Button>(R.id.retry_btn)
-            .setOnClickListener { viewModel.retryLoad() }
-        binding.loadingAnimation.visibility =
-            if (viewModel.movies.value?.size ?: 0 == 0) View.VISIBLE else View.GONE
 
         initRecyclerView()
         initStateHandling()
@@ -101,6 +102,7 @@ class PopularMoviesFragment : BaseFragment() {
     }
 
     private fun initStateHandling() {
+        initEmptyScreenError()
         viewModel.loadingState.observe(viewLifecycleOwner, Observer {
             adapter.currentState = it
             if (viewModel.movies.value?.size == 0) {
@@ -111,6 +113,15 @@ class PopularMoviesFragment : BaseFragment() {
                 }
             }
         })
+    }
+
+    private fun initEmptyScreenError() {
+        binding.run {
+            errorMsg.findViewById<Button>(R.id.retry_btn)
+                .setOnClickListener { viewModel.retryLoad() }
+            loadingAnimation.visibility =
+                if (viewModel.movies.value?.size ?: 0 == 0) View.VISIBLE else View.GONE
+        }
     }
 
     private fun onSuccess() {
@@ -135,12 +146,11 @@ class PopularMoviesFragment : BaseFragment() {
     }
 
     private fun onMovieClick(movie: Movie) {
-        viewModel.pickMovie(movie)
 //        TODO: add simple transition animation
         activity?.supportFragmentManager?.beginTransaction()?.apply {
             replace(
                 R.id.fragment_container,
-                MovieDetailsFragment.newInstance(),
+                MovieDetailsFragment.newInstance(movie),
                 MovieDetailsFragment.TAG
             )
             addToBackStack(null)
@@ -149,6 +159,8 @@ class PopularMoviesFragment : BaseFragment() {
     }
 
     companion object {
+        const val QUALIFIER = "Popular movies"
+
         private const val PORTRAIT_SPAN_CNT = 2
         private const val LANDSCAPE_SPAN_CNT = 4
     }

@@ -5,8 +5,8 @@ import androidx.lifecycle.MutableLiveData
 import androidx.paging.PageKeyedDataSource
 import com.legion1900.moviesapp.data.abs.MoviePager
 import com.legion1900.moviesapp.data.abs.MoviesRepository
-import com.legion1900.moviesapp.domain.abs.dto.Movie
-import com.legion1900.moviesapp.domain.abs.dto.MoviePage
+import com.legion1900.moviesapp.domain.dto.Movie
+import com.legion1900.moviesapp.domain.dto.MoviePage
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.disposables.CompositeDisposable
 

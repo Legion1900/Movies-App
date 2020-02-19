@@ -5,7 +5,8 @@ import dagger.Module
 import dagger.Provides
 
 @Module
-class ConfigModule {
+object ConfigModule {
+    @JvmStatic
     @Provides
     fun provideConfig(): PagedList.Config {
         return PagedList.Config.Builder()

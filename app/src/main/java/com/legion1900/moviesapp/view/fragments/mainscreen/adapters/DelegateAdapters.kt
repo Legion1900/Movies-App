@@ -7,7 +7,7 @@ import androidx.recyclerview.widget.DiffUtil
 import com.bumptech.glide.RequestManager
 import com.hannesdorfmann.adapterdelegates4.dsl.adapterDelegate
 import com.legion1900.moviesapp.R
-import com.legion1900.moviesapp.domain.abs.dto.Movie
+import com.legion1900.moviesapp.domain.dto.Movie
 
 const val VIEW_TYPE_MOVIE = 0
 const val VIEW_TYPE_LOADING = 1

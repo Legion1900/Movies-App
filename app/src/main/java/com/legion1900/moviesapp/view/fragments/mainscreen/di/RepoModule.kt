@@ -1,4 +1,4 @@
-package com.legion1900.moviesapp.di.modules
+package com.legion1900.moviesapp.view.fragments.mainscreen.di
 
 import com.legion1900.moviesapp.data.abs.MoviePager
 import com.legion1900.moviesapp.data.abs.MoviesRepository
@@ -8,10 +8,10 @@ import dagger.Binds
 import dagger.Module
 
 @Module
-abstract class RepoModule {
+interface RepoModule {
     @Binds
-    abstract fun bindMoviesRepo(repo: TMDBRepo): MoviesRepository
+    fun bindMoviesRepo(repo: TMDBRepo): MoviesRepository
 
     @Binds
-    abstract fun bindMoviePager(pager: RxMoviePager): MoviePager
+    fun bindMoviePager(pager: RxMoviePager): MoviePager
 }

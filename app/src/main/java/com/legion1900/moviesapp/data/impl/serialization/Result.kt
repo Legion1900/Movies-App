@@ -14,5 +14,5 @@ data class Result(
     val title: String,
     @SerializedName("vote_average") val avgVote: Float,
     val overview: String,
-    @SerializedName("release_date") val releaseDate: String
+    @SerializedName("release_date") val releaseDate: String?
 )

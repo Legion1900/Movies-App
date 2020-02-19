@@ -4,7 +4,7 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import com.legion1900.moviesapp.data.abs.MoviePager
 import com.legion1900.moviesapp.data.abs.MoviesRepository
-import com.legion1900.moviesapp.domain.abs.dto.Movie
+import com.legion1900.moviesapp.domain.dto.Movie
 import javax.inject.Inject
 
 class MoviesDataSourceFactory @Inject constructor(

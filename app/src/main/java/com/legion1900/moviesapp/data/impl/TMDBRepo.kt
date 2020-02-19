@@ -3,7 +3,7 @@ package com.legion1900.moviesapp.data.impl
 import com.legion1900.moviesapp.data.abs.MoviesRepository
 import com.legion1900.moviesapp.data.impl.serialization.TMDBConfiguration
 import com.legion1900.moviesapp.data.impl.services.TMDBService
-import com.legion1900.moviesapp.domain.abs.dto.MoviePage
+import com.legion1900.moviesapp.domain.dto.MoviePage
 import io.reactivex.Single
 import io.reactivex.schedulers.Schedulers
 import javax.inject.Inject

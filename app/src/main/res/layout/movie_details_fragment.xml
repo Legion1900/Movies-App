@@ -32,7 +32,7 @@
                 android:id="@+id/title"
                 style="@style/DetailsTitle"
                 android:maxLines="2"
-                android:text="@{viewModel.title}"
+                android:text="@{viewModel.movie.title}"
                 tools:text="Some Cool Title" />
 
             <TextView
@@ -41,7 +41,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="@dimen/middle"
-                android:text="@{viewModel.originalTitle}"
+                android:text="@{viewModel.movie.originalTitle}"
                 tools:text="Original Cool Title" />
 
             <TextView
@@ -49,7 +49,7 @@
                 style="@style/DetailsText"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:text="@{viewModel.overview}"
+                android:text="@{viewModel.movie.overview}"
                 tools:text="Really cool description!" />
 
         </LinearLayout>

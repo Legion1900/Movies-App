@@ -1,12 +1,11 @@
 package com.legion1900.moviesapp.view.fragments.mainscreen.adapters
 
-import android.util.Log
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.RecyclerView
 import com.hannesdorfmann.adapterdelegates4.AdapterDelegatesManager
 import com.hannesdorfmann.adapterdelegates4.paging.PagedListDelegationAdapter
 import com.legion1900.moviesapp.data.abs.MoviePager
-import com.legion1900.moviesapp.domain.abs.dto.Movie
+import com.legion1900.moviesapp.domain.dto.Movie
 
 class BottomNotifierMovieAdapter(
     itemCallback: DiffUtil.ItemCallback<Movie>,

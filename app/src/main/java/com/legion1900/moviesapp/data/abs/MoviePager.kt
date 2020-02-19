@@ -2,7 +2,7 @@ package com.legion1900.moviesapp.data.abs
 
 import androidx.lifecycle.LiveData
 import androidx.paging.PagedList
-import com.legion1900.moviesapp.domain.abs.dto.Movie
+import com.legion1900.moviesapp.domain.dto.Movie
 
 /*
 * Manages some kind of PagedList builder and provides data about loading state.

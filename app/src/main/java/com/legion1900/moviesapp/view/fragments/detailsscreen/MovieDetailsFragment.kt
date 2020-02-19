@@ -5,16 +5,22 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.databinding.DataBindingUtil
+import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
 import com.bumptech.glide.RequestManager
-import com.bumptech.glide.request.RequestOptions
 import com.legion1900.moviesapp.R
 import com.legion1900.moviesapp.databinding.MovieDetailsFragmentBinding
 import com.legion1900.moviesapp.di.App
-import com.legion1900.moviesapp.view.base.BaseFragment
+import com.legion1900.moviesapp.domain.dto.Movie
+import com.legion1900.moviesapp.view.base.ViewModelFactory
 import javax.inject.Inject
+import javax.inject.Named
 
-class MovieDetailsFragment : BaseFragment() {
+class MovieDetailsFragment : Fragment() {
+    @Inject
+    @Named(QUALIFIER)
+    lateinit var viewModelFactory: ViewModelFactory
+
     @Inject
     lateinit var glide: RequestManager
 
@@ -27,6 +33,9 @@ class MovieDetailsFragment : BaseFragment() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         App.appComponent.fragmentComponentBuilder().setFragment(this).build().inject(this)
+        if (viewModel.movie == null) {
+            viewModel.movie = arguments?.getParcelable(ARGS_MOVIE)
+        }
     }
 
     override fun onCreateView(
@@ -37,20 +46,21 @@ class MovieDetailsFragment : BaseFragment() {
             DataBindingUtil.inflate(inflater, R.layout.movie_details_fragment, container, false)
         binding.viewModel = viewModel
         binding.lifecycleOwner = viewLifecycleOwner
-        glide.setDefaultRequestOptions(glideOptions)
-            .load(viewModel.backdropUrl)
-            .into(binding.backdropImage)
+        glide.load(viewModel.movie!!.backdropPath).into(binding.backdropImage)
         return binding.root
     }
 
     companion object {
-        const val TAG = "movie_details"
+        const val QUALIFIER = "Movie details"
 
-        private val glideOptions = RequestOptions().apply {
-            placeholder(R.drawable.img_preview)
-            error(R.drawable.img_error)
-        }
+        const val TAG = "movie_details"
+        const val ARGS_MOVIE = "selected_movie"
+
         @JvmStatic
-        fun newInstance() = MovieDetailsFragment()
+        fun newInstance(movie: Movie) = MovieDetailsFragment().apply {
+            arguments = Bundle().apply {
+                putParcelable(ARGS_MOVIE, movie)
+            }
+        }
     }
 }

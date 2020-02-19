@@ -10,12 +10,14 @@ import dagger.Module
 import dagger.Provides
 
 @Module
-class GlideModule {
+object GlideModule {
+    @JvmStatic
     @FragmentScope
     @Provides
     fun provideGlide(fragment: Fragment, options: RequestOptions): RequestManager =
         Glide.with(fragment).setDefaultRequestOptions(options)
 
+    @JvmStatic
     @FragmentScope
     @Provides
     fun provideRequestOptions() = RequestOptions().apply {

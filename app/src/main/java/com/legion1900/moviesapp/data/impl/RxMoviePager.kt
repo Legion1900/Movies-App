@@ -6,7 +6,7 @@ import androidx.paging.PagedList
 import androidx.paging.RxPagedListBuilder
 import com.legion1900.moviesapp.data.abs.MoviePager
 import com.legion1900.moviesapp.data.impl.paging.MoviesDataSourceFactory
-import com.legion1900.moviesapp.domain.abs.dto.Movie
+import com.legion1900.moviesapp.domain.dto.Movie
 import io.reactivex.disposables.CompositeDisposable
 import javax.inject.Inject
 

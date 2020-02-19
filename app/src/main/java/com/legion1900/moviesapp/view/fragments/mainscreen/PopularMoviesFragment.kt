@@ -16,7 +16,7 @@ import com.legion1900.moviesapp.R
 import com.legion1900.moviesapp.data.abs.MoviePager
 import com.legion1900.moviesapp.databinding.PopularFilmsFragmentBinding
 import com.legion1900.moviesapp.di.App
-import com.legion1900.moviesapp.domain.abs.dto.Movie
+import com.legion1900.moviesapp.domain.dto.Movie
 import com.legion1900.moviesapp.view.base.BaseFragment
 import com.legion1900.moviesapp.view.fragments.detailsscreen.MovieDetailsFragment
 import com.legion1900.moviesapp.view.fragments.mainscreen.adapters.*

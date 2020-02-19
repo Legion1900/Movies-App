@@ -10,7 +10,7 @@ import com.bumptech.glide.RequestManager
 import com.legion1900.moviesapp.R
 import com.legion1900.moviesapp.databinding.MovieDetailsFragmentBinding
 import com.legion1900.moviesapp.di.App
-import com.legion1900.moviesapp.domain.abs.dto.Movie
+import com.legion1900.moviesapp.domain.dto.Movie
 import com.legion1900.moviesapp.view.base.BaseFragment
 import javax.inject.Inject
 

@@ -1,6 +1,6 @@
 package com.legion1900.moviesapp.data.impl
 
-import com.legion1900.moviesapp.domain.abs.dto.Movie
+import com.legion1900.moviesapp.domain.dto.Movie
 import com.legion1900.moviesapp.data.impl.serialization.Result
 
 class ResultMovieConverter(

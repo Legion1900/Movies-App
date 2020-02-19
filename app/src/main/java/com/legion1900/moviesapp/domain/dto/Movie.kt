@@ -1,4 +1,4 @@
-package com.legion1900.moviesapp.domain.abs.dto
+package com.legion1900.moviesapp.domain.dto
 
 import android.os.Parcel
 import android.os.Parcelable

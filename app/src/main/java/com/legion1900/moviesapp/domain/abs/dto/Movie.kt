@@ -12,5 +12,5 @@ data class Movie(
     val backdropPath: String?,
     val originalLanguage: String,
     val overview: String,
-    val releaseDate: String
+    val releaseDate: String?
 )

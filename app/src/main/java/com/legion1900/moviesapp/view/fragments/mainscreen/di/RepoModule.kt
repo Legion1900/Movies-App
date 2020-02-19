@@ -1,4 +1,4 @@
-package com.legion1900.moviesapp.di.modules
+package com.legion1900.moviesapp.view.fragments.mainscreen.di
 
 import com.legion1900.moviesapp.data.abs.MoviePager
 import com.legion1900.moviesapp.data.abs.MoviesRepository

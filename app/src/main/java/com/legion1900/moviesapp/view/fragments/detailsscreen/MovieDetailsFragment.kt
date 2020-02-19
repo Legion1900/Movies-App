@@ -5,16 +5,22 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.databinding.DataBindingUtil
+import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
 import com.bumptech.glide.RequestManager
 import com.legion1900.moviesapp.R
 import com.legion1900.moviesapp.databinding.MovieDetailsFragmentBinding
 import com.legion1900.moviesapp.di.App
 import com.legion1900.moviesapp.domain.dto.Movie
-import com.legion1900.moviesapp.view.base.BaseFragment
+import com.legion1900.moviesapp.view.base.ViewModelFactory
 import javax.inject.Inject
+import javax.inject.Named
 
-class MovieDetailsFragment : BaseFragment() {
+class MovieDetailsFragment : Fragment() {
+    @Inject
+    @Named(QUALIFIER)
+    lateinit var viewModelFactory: ViewModelFactory
+
     @Inject
     lateinit var glide: RequestManager
 
@@ -45,6 +51,8 @@ class MovieDetailsFragment : BaseFragment() {
     }
 
     companion object {
+        const val QUALIFIER = "Movie details"
+
         const val TAG = "movie_details"
         const val ARGS_MOVIE = "selected_movie"
 

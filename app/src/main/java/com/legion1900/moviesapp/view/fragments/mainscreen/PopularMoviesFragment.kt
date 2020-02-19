@@ -7,6 +7,7 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.Button
 import androidx.databinding.DataBindingUtil
+import androidx.fragment.app.Fragment
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.GridLayoutManager
@@ -17,12 +18,17 @@ import com.legion1900.moviesapp.data.abs.MoviePager
 import com.legion1900.moviesapp.databinding.PopularFilmsFragmentBinding
 import com.legion1900.moviesapp.di.App
 import com.legion1900.moviesapp.domain.dto.Movie
-import com.legion1900.moviesapp.view.base.BaseFragment
+import com.legion1900.moviesapp.view.base.ViewModelFactory
 import com.legion1900.moviesapp.view.fragments.detailsscreen.MovieDetailsFragment
 import com.legion1900.moviesapp.view.fragments.mainscreen.adapters.*
 import javax.inject.Inject
+import javax.inject.Named
 
-class PopularMoviesFragment : BaseFragment() {
+class PopularMoviesFragment : Fragment() {
+
+    @Inject
+    @Named(QUALIFIER)
+    lateinit var viewModelFactory: ViewModelFactory
 
     @Inject
     lateinit var glide: RequestManager
@@ -134,7 +140,6 @@ class PopularMoviesFragment : BaseFragment() {
     }
 
     private fun onMovieClick(movie: Movie) {
-//        viewModel.pickMovie(movie)
 //        TODO: add simple transition animation
         activity?.supportFragmentManager?.beginTransaction()?.apply {
             replace(
@@ -148,6 +153,8 @@ class PopularMoviesFragment : BaseFragment() {
     }
 
     companion object {
+        const val QUALIFIER = "Popular movies"
+
         private const val PORTRAIT_SPAN_CNT = 2
         private const val LANDSCAPE_SPAN_CNT = 4
     }

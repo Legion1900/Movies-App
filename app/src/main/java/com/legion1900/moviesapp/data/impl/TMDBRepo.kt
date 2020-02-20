@@ -1,10 +1,14 @@
 package com.legion1900.moviesapp.data.impl
 
 import com.legion1900.moviesapp.data.abs.MoviesRepository
+import com.legion1900.moviesapp.data.impl.serialization.Response
+import com.legion1900.moviesapp.data.impl.serialization.Result
 import com.legion1900.moviesapp.data.impl.serialization.TMDBConfiguration
 import com.legion1900.moviesapp.data.impl.services.TMDBService
 import com.legion1900.moviesapp.domain.dto.MoviePage
+import io.reactivex.Observable
 import io.reactivex.Single
+import io.reactivex.functions.BiFunction
 import io.reactivex.schedulers.Schedulers
 import javax.inject.Inject
 import javax.inject.Named
@@ -19,22 +23,26 @@ class TMDBRepo @Inject constructor(
 
     override fun loadMovies(page: Int): Single<MoviePage> {
         val query = TMDBService.buildFindQuery(page)
-        val movies = loadMovies(query)
-        return if (apiConfig == null) movies.delaySubscription(loadConfig()) else movies
+        var load = loadMovies(query)
+        if (apiConfig == null)
+            load = load.delaySubscription(loadConfig())
+        return load.mapUrls()
     }
 
-    private fun loadMovies(query: Map<String, String>): Single<MoviePage> {
-        return service.loadPopularMovies(query).subscribeOn(Schedulers.io()).map { response ->
-            with(apiConfig!!) {
-                val currentPage = response.page
-                val totalPages = response.totalPages
-                val posterSize = imageApi.posterSizes[posterSize]
-                val backdropSize = imageApi.posterSizes[backdropSize]
-                val baseUrl = imageApi.baseUrl
-                val movies = ResultMovieConverter(baseUrl, posterSize, backdropSize)
-                    .resultsToMovies(response.results)
-                MoviePage(currentPage, totalPages, movies)
-            }
+    private fun loadMovies(query: Map<String, String>): Single<Response> {
+        return service.loadPopularMovies(query).subscribeOn(Schedulers.io())
+    }
+
+    private fun Single<Response>.mapUrls() = map { response ->
+        with(apiConfig!!) {
+            val currentPage = response.page
+            val totalPages = response.totalPages
+            val posterSize = imageApi.posterSizes[posterSize]
+            val backdropSize = imageApi.posterSizes[backdropSize]
+            val baseUrl = imageApi.baseUrl
+            val movies = ResultMovieConverter(baseUrl, posterSize, backdropSize)
+                .resultsToMovies(response.results)
+            MoviePage(currentPage, totalPages, movies)
         }
     }
 

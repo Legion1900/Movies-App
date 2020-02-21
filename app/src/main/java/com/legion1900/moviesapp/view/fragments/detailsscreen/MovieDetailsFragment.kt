@@ -7,11 +7,11 @@ import android.view.ViewGroup
 import androidx.databinding.DataBindingUtil
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
+import androidx.navigation.fragment.navArgs
 import com.bumptech.glide.RequestManager
 import com.legion1900.moviesapp.R
 import com.legion1900.moviesapp.databinding.MovieDetailsFragmentBinding
 import com.legion1900.moviesapp.di.App
-import com.legion1900.moviesapp.domain.dto.Movie
 import com.legion1900.moviesapp.view.base.ViewModelFactory
 import javax.inject.Inject
 import javax.inject.Named
@@ -26,16 +26,16 @@ class MovieDetailsFragment : Fragment() {
 
     private lateinit var binding: MovieDetailsFragmentBinding
 
+    private val args by navArgs<MovieDetailsFragmentArgs>()
+
     private val viewModel: MovieDetailsViewModel by lazy {
-        ViewModelProvider(this, viewModelFactory)[MovieDetailsViewModel::class.java]
+        val vm = ViewModelProvider(this, viewModelFactory)[MovieDetailsViewModel::class.java]
+        vm.apply { movie = args.selectedMovie }
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         App.appComponent.fragmentComponentBuilder().setFragment(this).build().inject(this)
-        if (viewModel.movie == null) {
-            viewModel.movie = arguments?.getParcelable(ARGS_MOVIE)
-        }
     }
 
     override fun onCreateView(
@@ -53,14 +53,7 @@ class MovieDetailsFragment : Fragment() {
     companion object {
         const val QUALIFIER = "Movie details"
 
-        const val TAG = "movie_details"
-        const val ARGS_MOVIE = "selected_movie"
-
         @JvmStatic
-        fun newInstance(movie: Movie) = MovieDetailsFragment().apply {
-            arguments = Bundle().apply {
-                putParcelable(ARGS_MOVIE, movie)
-            }
-        }
+        fun newInstance() = MovieDetailsFragment()
     }
 }

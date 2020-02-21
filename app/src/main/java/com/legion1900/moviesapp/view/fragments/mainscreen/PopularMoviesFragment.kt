@@ -10,6 +10,8 @@ import androidx.databinding.DataBindingUtil
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
+import androidx.navigation.NavController
+import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.GridLayoutManager
 import com.bumptech.glide.RequestManager
 import com.hannesdorfmann.adapterdelegates4.AdapterDelegatesManager
@@ -19,7 +21,6 @@ import com.legion1900.moviesapp.databinding.PopularFilmsFragmentBinding
 import com.legion1900.moviesapp.di.App
 import com.legion1900.moviesapp.domain.dto.Movie
 import com.legion1900.moviesapp.view.base.ViewModelFactory
-import com.legion1900.moviesapp.view.fragments.detailsscreen.MovieDetailsFragment
 import com.legion1900.moviesapp.view.fragments.mainscreen.adapters.*
 import javax.inject.Inject
 import javax.inject.Named
@@ -36,6 +37,8 @@ class PopularMoviesFragment : Fragment() {
     private lateinit var binding: PopularFilmsFragmentBinding
 
     private lateinit var adapter: BottomNotifierMovieAdapter
+
+    private val navigator: NavController by lazy { findNavController() }
 
     private val viewModel: PopularMoviesViewModel by lazy {
         ViewModelProvider(this, viewModelFactory)[PopularMoviesViewModel::class.java]
@@ -110,6 +113,7 @@ class PopularMoviesFragment : Fragment() {
                     MoviePager.LoadingState.LOADING -> onLoading()
                     MoviePager.LoadingState.IDLE -> onSuccess()
                     MoviePager.LoadingState.ERROR -> onError()
+                    else -> Unit
                 }
             }
         })
@@ -146,16 +150,8 @@ class PopularMoviesFragment : Fragment() {
     }
 
     private fun onMovieClick(movie: Movie) {
-//        TODO: add simple transition animation
-        activity?.supportFragmentManager?.beginTransaction()?.apply {
-            replace(
-                R.id.fragment_container,
-                MovieDetailsFragment.newInstance(movie),
-                MovieDetailsFragment.TAG
-            )
-            addToBackStack(null)
-            commit()
-        }
+        val action = PopularMoviesFragmentDirections.showMovieDetails(movie)
+        navigator.navigate(action)
     }
 
     companion object {

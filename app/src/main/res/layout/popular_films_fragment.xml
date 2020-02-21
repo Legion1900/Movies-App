@@ -1,15 +1,15 @@
 <?xml version="1.0" encoding="utf-8"?>
 <layout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    xmlns:tools="http://schemas.android.com/tools">
+    xmlns:tools="http://schemas.android.com/tools"
+    tools:context="com.legion1900.moviesapp.view.fragments.mainscreen.PopularMoviesFragment">
 
     <!--TODO: add SwipeRefresh layout and RecyclerView placeholder to display error if no data was loaded-->
 
     <androidx.constraintlayout.widget.ConstraintLayout
         android:id="@+id/popular_films_screen"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        tools:context=".view.fragments.mainscreen.PopularMoviesFragment">
+        android:layout_height="match_parent">
 
         <androidx.recyclerview.widget.RecyclerView
             android:id="@+id/movie_list"
@@ -34,14 +34,14 @@
 
 
         <include
-            android:visibility="gone"
             android:id="@+id/errorMsg"
+            layout="@layout/error_view_holder"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            app:layout_constraintTop_toTopOf="parent"
+            android:visibility="gone"
             app:layout_constraintBottom_toBottomOf="parent"
-            layout="@layout/error_view_holder"
-            tools:visibility="visible"/>
+            app:layout_constraintTop_toTopOf="parent"
+            tools:visibility="visible" />
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 </layout>

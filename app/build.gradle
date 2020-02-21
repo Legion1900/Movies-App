@@ -6,6 +6,9 @@ apply plugin: 'kotlin-android-extensions'
 
 apply plugin: 'kotlin-kapt'
 
+apply plugin: 'androidx.navigation.safeargs.kotlin'
+
+
 def apiKeyFile = rootProject.file("apikey.properties")
 def apiKeyProperties = new Properties()
 apiKeyProperties.load(new FileInputStream(apiKeyFile))
@@ -13,6 +16,16 @@ apiKeyProperties.load(new FileInputStream(apiKeyFile))
 android {
     compileSdkVersion 29
     buildToolsVersion "29.0.2"
+
+    compileOptions {
+        sourceCompatibility JavaVersion.VERSION_1_8
+        targetCompatibility JavaVersion.VERSION_1_8
+    }
+
+    kotlinOptions {
+        jvmTarget = "1.8"
+    }
+
     defaultConfig {
         applicationId "com.legion1900.moviesapp"
         minSdkVersion 19
@@ -44,6 +57,7 @@ dependencies {
     def retrofit_version = '2.6.1'
     def paging_version = "2.1.1"
     def adapter_delegate_version = "4.2.0"
+    def nav_version = '2.3.0-alpha02'
 
     implementation fileTree(dir: 'libs', include: ['*.jar'])
     implementation "org.jetbrains.kotlin:kotlin-stdlib-jdk7:$kotlin_version"
@@ -76,6 +90,14 @@ dependencies {
 
     implementation "com.hannesdorfmann:adapterdelegates4-kotlin-dsl:$adapter_delegate_version"
     implementation "com.hannesdorfmann:adapterdelegates4-pagination:$adapter_delegate_version"
+
+    implementation "androidx.navigation:navigation-fragment:$nav_version"
+    implementation "androidx.navigation:navigation-ui:$nav_version"
+    // Kotlin.
+    implementation "androidx.navigation:navigation-fragment-ktx:$nav_version"
+    implementation "androidx.navigation:navigation-ui-ktx:$nav_version"
+    // Dynamic Feature Module Support.
+    implementation "androidx.navigation:navigation-dynamic-features-fragment:$nav_version"
 
     testImplementation 'junit:junit:4.12'
     androidTestImplementation 'androidx.test.ext:junit:1.1.1'

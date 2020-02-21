@@ -2,11 +2,9 @@ package com.legion1900.moviesapp.data.impl
 
 import com.legion1900.moviesapp.data.abs.MoviesRepository
 import com.legion1900.moviesapp.data.impl.serialization.Response
-import com.legion1900.moviesapp.data.impl.serialization.Result
 import com.legion1900.moviesapp.data.impl.serialization.TMDBConfiguration
 import com.legion1900.moviesapp.data.impl.services.TMDBService
 import com.legion1900.moviesapp.domain.dto.MoviePage
-import io.reactivex.Observable
 import io.reactivex.Single
 import io.reactivex.functions.BiFunction
 import io.reactivex.schedulers.Schedulers
@@ -23,17 +21,20 @@ class TMDBRepo @Inject constructor(
 
     override fun loadMovies(page: Int): Single<MoviePage> {
         val query = TMDBService.buildFindQuery(page)
-        var load = loadMovies(query)
+        var loading = loadMovies(query)
         if (apiConfig == null)
-            load = load.delaySubscription(loadConfig())
-        return load.mapUrls()
+            loading = Single.zip(loading, loadConfig(), BiFunction { response, config ->
+                apiConfig = config
+                response
+            })
+        return loading.convert()
     }
 
     private fun loadMovies(query: Map<String, String>): Single<Response> {
         return service.loadPopularMovies(query).subscribeOn(Schedulers.io())
     }
 
-    private fun Single<Response>.mapUrls() = map { response ->
+    private fun Single<Response>.convert() = map { response ->
         with(apiConfig!!) {
             val currentPage = response.page
             val totalPages = response.totalPages
@@ -47,8 +48,6 @@ class TMDBRepo @Inject constructor(
     }
 
     private fun loadConfig(): Single<TMDBConfiguration> {
-        return service.loadApiConfig().subscribeOn(Schedulers.io()).doOnSuccess {
-            apiConfig = it
-        }
+        return service.loadApiConfig().subscribeOn(Schedulers.io())
     }
 }

@@ -82,3 +82,11 @@ lint/generated/
 lint/outputs/
 lint/tmp/
 # lint/reports/
+/.idea/.name
+/apikey.properties
+/.idea/codeStyles/codeStyleConfig.xml
+/.idea/misc.xml
+/.idea/codeStyles/Project.xml
+/.idea/runConfigurations.xml
+/.idea/shelf/Testing1/shelved.patch
+/.idea/shelf/Testing1.xml

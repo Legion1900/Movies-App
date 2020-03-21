@@ -34,6 +34,8 @@ android {
         versionName "1.0"
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
 
+        multiDexEnabled = true
+
         vectorDrawables.useSupportLibrary = true
 
         buildConfigField("String", "API_KEY", apiKeyProperties['TMDB_KEY'])
@@ -116,6 +118,8 @@ dependencies {
     kapt "androidx.room:room-compiler:$room_version"
     // RxJava support for Room.
     implementation "androidx.room:room-rxjava2:$room_version"
+
+    implementation 'androidx.multidex:multidex:2.0.1'
 
     testImplementation 'junit:junit:4.12'
     androidTestImplementation 'androidx.test.ext:junit:1.1.1'

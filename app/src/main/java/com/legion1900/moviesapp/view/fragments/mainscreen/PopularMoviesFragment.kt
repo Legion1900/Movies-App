@@ -36,7 +36,17 @@ class PopularMoviesFragment : Fragment() {
 
     private lateinit var binding: PopularFilmsFragmentBinding
 
-    private lateinit var adapter: BottomNotifierMovieAdapter
+    private val adapter: BottomNotifierMovieAdapter by lazy {
+        val manager = AdapterDelegatesManager<List<Movie>>()
+            .addDelegate(VIEW_TYPE_MOVIE, buildMovieDelegate(glide, ::onMovieClick))
+            .addDelegate(VIEW_TYPE_LOADING, buildLoadingDelegate())
+            .addDelegate(VIEW_TYPE_ERROR, buildErrorDelegate(viewModel::retryLoad))
+        BottomNotifierMovieAdapter(
+            buildItemDiffCallback(),
+            MoviePager.LoadingState.LOADING,
+            manager
+        )
+    }
 
     private val navigator: NavController by lazy { findNavController() }
 
@@ -71,7 +81,6 @@ class PopularMoviesFragment : Fragment() {
     }
 
     private fun initRecyclerView() {
-        initAdapter()
         binding.run {
             movieList.adapter = adapter
             movieList.layoutManager = buildFooterGridLayoutManager()
@@ -79,18 +88,6 @@ class PopularMoviesFragment : Fragment() {
         viewModel.movies.observe(viewLifecycleOwner, Observer {
             adapter.submitList(it)
         })
-    }
-
-    private fun initAdapter() {
-        val manager = AdapterDelegatesManager<List<Movie>>()
-            .addDelegate(VIEW_TYPE_MOVIE, buildMovieDelegate(glide, ::onMovieClick))
-            .addDelegate(VIEW_TYPE_LOADING, buildLoadingDelegate())
-            .addDelegate(VIEW_TYPE_ERROR, buildErrorDelegate(viewModel::retryLoad))
-        adapter = BottomNotifierMovieAdapter(
-            buildItemDiffCallback(),
-            MoviePager.LoadingState.LOADING,
-            manager
-        )
     }
 
     private fun buildFooterGridLayoutManager() = GridLayoutManager(context, spanCount).apply {
